@@ -1,0 +1,4 @@
+project_id = "kairos-nexus"
+
+[functions.send-campaign]
+verify_jwt = true
