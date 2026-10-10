@@ -1,47 +1,157 @@
-# NEXUS · AI Business Operating Platform
+# NEXUS — AI Business Operating Platform
 
-React dashboard served by Vite on Node.js. The original single-file prototype remains in the repository; the React app starts at `index.html`.
+NEXUS is a React dashboard for managing day-to-day business operations from one workspace. It brings together events, customer relationships, registrations, marketing campaigns, and workflow activity in a responsive interface.
+
+The app is built with React and Vite. Supabase can provide user authentication and private, per-user workspace storage. Campaign email delivery can be enabled separately with a Supabase Edge Function and Resend. AI workflows and subscription changes are demonstrations only; this project does not call a real AI model or process payments.
+
+## Features
+
+- **Overview:** See a summary of workspace activity and key metrics.
+- **Events and registrations:** Create and manage events, attendees, and registrations.
+- **CRM:** Track customer and lead records.
+- **Marketing:** Draft campaigns, request approval, and review campaign activity.
+- **Website builder:** Configure event landing-page content.
+- **AI Command Center:** Explore a simulated workflow and assistant experience.
+- **Subscriptions:** Explore simulated plans and subscription preferences.
+- **Authentication and storage:** Sign in with Supabase Auth and save a private workspace when Supabase is configured.
+- **Optional campaign delivery:** Send approved campaign emails through a Supabase Edge Function backed by Resend.
+
+The app includes sample/demo records to make the interface easy to explore. Demo contacts are excluded from real campaign delivery.
+
+## Requirements
+
+- Node.js 18 or newer
+- npm
+- A Supabase project for authentication and cloud workspace storage
+- Optional: a Resend account and Supabase CLI for campaign email delivery
 
 ## Run locally
 
-```sh
-npm install
-npm run dev
+1. Clone the repository and open its directory:
+
+   ```sh
+   git clone https://github.com/abhilash-inprogress/Kairos_college_round.git
+   cd Kairos_college_round
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm install
+   ```
+
+3. Configure Supabase as described below.
+4. Start the Vite development server:
+
+   ```sh
+   npm run dev
+   ```
+
+5. Open the local URL printed in the terminal (usually <http://localhost:5173>).
+
+The application uses Supabase Auth to access the workspace. Configure the Supabase environment variables before signing in.
+
+## Configure Supabase
+
+### 1. Set frontend environment variables
+
+Copy `.env.example` to `.env` in the repository root and provide your Supabase project URL and public anon/publishable key:
+
+```dotenv
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-supabase-publishable-or-anon-key
 ```
 
-Open the local URL printed by Vite (normally `http://localhost:5173`).
+Restart the Vite server after changing `.env`. In the Supabase dashboard, configure the Auth site URL and allowed redirect URLs to include your app URL (for local development, `http://localhost:5173`). Email confirmation settings are controlled by the Supabase project.
 
-## Configure authentication
+Only use the project's **public anon/publishable key** in this frontend configuration. Never put a service-role key, Resend API key, or other secret in a `VITE_*` variable or browser code.
 
-Authentication uses Supabase Auth. Copy `.env.example` to `.env` and set:
+### 2. Create the workspace table and sync function
 
-- `VITE_SUPABASE_URL` to the project URL from Supabase project settings.
-- `VITE_SUPABASE_ANON_KEY` to the project's public anon/publishable key.
+In your Supabase project's **SQL Editor**, run the SQL in [`supabase/schema.sql`](./supabase/schema.sql). It creates the `workspace_records` table, enables Row Level Security (RLS), and creates the `sync_workspace_records` function used for workspace saves.
 
-Restart Vite after changing environment variables. In Supabase Auth settings, configure the site URL and allowed redirect URLs to include the app URL (for local development, `http://localhost:5173`). Email confirmation behavior is controlled by the Supabase project's Authentication settings. Only use the public anon/publishable key in the frontend; never expose a service-role key.
+Do not disable RLS. Workspace records are scoped to the signed-in user's ID.
 
-## Connect workspace data
+### 3. Sign in and save workspace data
 
-After configuring Supabase, open the project's **SQL Editor**, paste the contents of [`supabase/schema.sql`](./supabase/schema.sql), and run it while signed into the Supabase dashboard. It creates a user-private `workspace_records` table, enables Row Level Security, and adds the `sync_workspace_records` function the app uses for atomic saves. Do not disable Row Level Security or put a service-role key in `.env`.
+Create an account or sign in through the app. After the schema is installed, workspace records—including events, customers, registrations, campaigns, settings, activity, and assistant demo history—are saved in Supabase for that user. You can inspect them in the Supabase **Table Editor** under `workspace_records`.
 
-Restart the app with `npm run dev` and sign in. On a user's first visit, the sample workspace is saved to Supabase; later changes to events, customers, registrations, campaigns, landing pages, subscription-demo preferences, workflow activity, and AI demo conversation history are saved to that user's records. The `workspace_records` table is visible in Supabase **Table Editor**. Each row has a `record_type`, `record_key`, and JSON `data`; rows are isolated by authenticated user.
+## Optional: enable campaign email
 
-## Enable real campaign email
+Campaign delivery is disabled until its Supabase Edge Function and Resend secrets are configured.
 
-Campaign delivery uses a Supabase Edge Function so the Resend API key is never sent to the browser.
+1. Create a Resend account, generate an API key, and verify a sender domain. Choose a sender address on that verified domain.
+2. In Supabase **Edge Functions → Secrets**, set:
+   - `RESEND_API_KEY`
+   - `RESEND_FROM_EMAIL` (for example, `NEXUS <events@your-verified-domain.com>`)
+3. Install the [Supabase CLI](https://supabase.com/docs/guides/cli), authenticate, and link this repository to your Supabase project:
 
-1. Create a Resend account and API key. Verify a sender domain in Resend; use an address on that domain for `RESEND_FROM_EMAIL`. Resend's unverified test sender can only deliver to the address associated with your Resend account.
-2. In Supabase **Edge Functions → Secrets**, add `RESEND_API_KEY` and `RESEND_FROM_EMAIL` (for example, `NEXUS <events@your-verified-domain.com>`). Do not put either value in the Vite `.env` file or frontend code.
-3. Install the [Supabase CLI](https://supabase.com/docs/guides/cli), run `supabase login`, then from this repository run `supabase link --project-ref YOUR_PROJECT_REF` and `supabase functions deploy send-campaign`. The project ref is the part before `.supabase.co` in your project URL. The function requires a valid Supabase sign-in token.
-4. In NEXUS, create or edit a campaign, request approval, approve it, and click **Send email**. Confirm the prompt to send. Messages go only to non-demo attendees registered for that campaign's linked event; the sample/demo contacts are excluded. The campaign and activity record show the delivery result.
+   ```sh
+   supabase login
+   supabase link --project-ref YOUR_PROJECT_REF
+   ```
 
-Resend and Supabase function logs can be used to check delivery attempts. If a send has an uncertain or partial result, NEXUS marks it **Delivery needs review** and blocks another send to avoid accidental duplicate emails.
+   `YOUR_PROJECT_REF` is the identifier at the start of your Supabase project URL, before `.supabase.co`.
+
+4. Deploy the function:
+
+   ```sh
+   supabase functions deploy send-campaign
+   ```
+
+5. In the app, create or edit a campaign, request approval, approve it, and choose **Send email**.
+
+The function requires a signed-in user and sends only to non-demo attendees registered for the campaign's linked event. It records delivery activity and blocks a repeat send when the result is uncertain, to reduce accidental duplicates. Check the Supabase Edge Function and Resend logs when troubleshooting delivery.
+
+Never add Resend secrets to `.env`, frontend source, or other files tracked by Git.
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server. |
+| `npm run build` | Create a production build in `dist/`. |
+| `npm run preview` | Preview the production build locally. |
 
 ## Production build
+
+Build and preview the app locally:
 
 ```sh
 npm run build
 npm run preview
 ```
 
-Supabase handles account creation, email/password sign-in, session persistence, and sign-out. Workspace records are stored in Supabase after the database setup above. Campaign email uses Resend after the Edge Function setup above. Subscription changes and AI workflows remain explicitly simulated; the app does not process payments or call a real AI model.
+Deploy the generated `dist/` directory to a static hosting provider. Add the same `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` values to that provider's build-time environment configuration, and add the deployed app URL to the Supabase Auth redirect allow-list.
+
+## Project structure
+
+```text
+.
+├── index.html                     # Vite HTML entry point
+├── src/
+│   ├── App.jsx                    # Main dashboard and workspace UI
+│   ├── AuthGate.jsx               # Supabase sign-up/sign-in gate
+│   ├── main.jsx                   # React application entry point
+│   ├── styles.css                 # Application styles and typography
+│   ├── supabase.js                # Supabase client configuration
+│   └── workspaceStore.js          # Workspace persistence and email calls
+├── supabase/
+│   ├── functions/send-campaign/   # Optional campaign email Edge Function
+│   └── schema.sql                 # Workspace table, RLS policies, and RPC
+├── .env.example                   # Frontend environment variable template
+└── vite.config.js                 # Vite configuration
+```
+
+## Troubleshooting
+
+- **Authentication is not configured:** Check that `.env` contains both Supabase frontend variables, then restart `npm run dev`.
+- **Workspace saves fail:** Confirm that `supabase/schema.sql` ran successfully and that RLS remains enabled.
+- **Email delivery is unavailable:** Confirm the Edge Function is deployed, its secrets are configured, the sender domain is verified, and the campaign is approved.
+- **The page does not load after deployment:** Configure the hosting provider to serve `index.html` for application routes and confirm the Supabase Auth redirect URLs include the deployed URL.
+
+## Notes
+
+- Subscription and AI experiences are simulated; no payments are processed and no live AI model is called.
+- Supabase and Resend are third-party services and require their own accounts and configuration.
+- The original standalone prototype is retained in the repository; the Vite app starts from `index.html`.
