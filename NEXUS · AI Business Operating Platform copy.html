@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NEXUS · AI Business Operating Platform</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark;
+--bg:#0B1020;--card:#141B2D;--bd:#242D47;--hv:#1A2339;--tx:#E6EAF5;--mut:#8B95B0;--blue:#4F7CFF;--vio:#8B7CF6;--ok:#34C58A;--warn:#F0B24B;--err:#F0616D;--f:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 var(--f)}
+#side{position:fixed;left:0;top:env(safe-area-inset-top,0px);bottom:0;width:236px;background:#0E1426;border-right:1px solid var(--bd);padding:18px 12px;display:flex;flex-direction:column;gap:4px;z-index:20;transition:transform .2s}
+.brand{padding:4px 8px 14px}.brand b{font-size:19px;letter-spacing:.14em}.brand small{display:block;color:var(--mut);font-size:11px}
+.ws{margin:0 4px 10px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font-size:12px;color:var(--mut)}.ws b{display:block;color:var(--tx);font-weight:600}
+.nav{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:8px;color:var(--mut);background:none;border:0;font:inherit;cursor:pointer;text-align:left;width:100%}
+.nav:hover{background:var(--hv);color:var(--tx)}.nav.on{background:#1B2547;color:#fff;box-shadow:inset 3px 0 var(--blue)}
+svg.i{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+main{margin-left:236px;padding:24px 28px 48px;max-width:1280px}
+#top{display:none}
+h1{font-size:22px;margin:0 0 2px}h2{font-size:15px;margin:0 0 12px}.sub{color:var(--mut);margin:0 0 20px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g2{grid-template-columns:2fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px;min-width:0}
+.card.h:hover{border-color:#34406A}
+.kpi small{color:var(--mut)}.kpi b{display:block;font-size:28px;margin-top:4px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.btn{background:var(--blue);color:#fff;border:1px solid transparent;border-radius:8px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+.btn:hover{background:#6189FF}.btn.s{background:transparent;border-color:var(--bd);color:var(--tx)}.btn.s:hover{background:var(--hv)}
+.btn.v{background:var(--vio)}.btn.sm{padding:4px 10px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{width:100%;background:#0E1426;border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:9px 11px;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid #4F7CFF66;border-color:var(--blue)}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 4px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--mut);font-weight:500;font-size:12px;padding:8px 10px;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid var(--bd);vertical-align:top}tr:hover td{background:var(--hv)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid;white-space:nowrap}
+.Success,.Active,.Customer,.Ready,.Approved{color:var(--ok);border-color:#34C58A55;background:#34C58A14}
+.Pending,.Lead,.Draft,.Trial,.Pending-approval{color:var(--warn);border-color:#F0B24B55;background:#F0B24B14}
+.Error,.Past-due{color:var(--err);border-color:#F0616D55;background:#F0616D14}
+.Simulated,.Sent,.Running{color:var(--vio);border-color:#8B7CF655;background:#8B7CF614}
+.err{color:var(--err);background:#F0616D14;border:1px solid #F0616D44;border-radius:8px;padding:8px 10px;margin-top:12px}
+.okb{color:var(--ok);background:#34C58A14;border:1px solid #34C58A44;border-radius:8px;padding:12px;margin-top:6px}
+.mut{color:var(--mut)}.bar{height:6px;background:#0E1426;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--blue)}
+.li{padding:10px 0;border-bottom:1px solid var(--bd);display:flex;gap:10px;justify-content:space-between}.li:last-child{border:0}
+#modal{position:fixed;inset:0;background:#05081099;display:none;align-items:flex-start;justify-content:center;padding:40px 14px;overflow:auto;z-index:50}
+#modal.on{display:flex}#mb{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:22px;width:100%;max-width:520px}
+#toast{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;gap:8px}
+.t{background:var(--card);border:1px solid var(--bd);border-left:3px solid var(--ok);padding:10px 14px;border-radius:8px;max-width:320px}.t.e{border-left-color:var(--err)}
+.chat{display:flex;flex-direction:column;gap:14px}.me{align-self:flex-end;background:#1B2547;border-radius:12px;padding:10px 14px;max-width:80%}
+.step{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--bd)}.step .n{width:22px;height:22px;border-radius:50%;background:#1B2547;text-align:center;font-size:12px;line-height:22px;flex:none}
+.lp{background:#0E1426;border:1px solid var(--bd);border-radius:12px;padding:40px 24px;text-align:center}.lp h3{font-size:26px;margin:8px 0}
+.mail{background:#0E1426;border:1px solid var(--bd);border-radius:8px;padding:12px;white-space:pre-wrap}
+@media(max-width:980px){.g4{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}}
+@media(max-width:860px){#side{transform:translateX(-100%)}#side.open{transform:none}main{margin-left:0;padding:14px 14px 40px}
+#top{display:flex;align-items:center;gap:10px;margin-bottom:14px}}
+@media(max-width:480px){.g4{grid-template-columns:1fr}}
+</style></head><body>
+<aside id="side"></aside><main><div id="top"><button class="btn s sm" data-a="menu">☰ Menu</button><b style="letter-spacing:.14em">NEXUS</b></div><div id="app"></div></main>
+<div id="modal"><div id="mb"></div></div><div id="toast"></div>
+<script>
+const D=864e5,$=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ds=n=>new Date(Date.now()+n*D).toISOString().slice(0,10),fd=d=>new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<1?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'};
+const cls=s=>s.replace(/\s/g,'-').replace(/\(.*\)/,'').replace(/-$/,'');
+const pill=s=>`<span class="pill ${cls(s)}">${esc(s)}</span>`;
+const IC={overview:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',ai:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z',events:'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4',crm:'M16 8a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM4 21c0-4 4-6 8-6s8 2 8 6',marketing:'M3 11v3l14 6V5L3 11z',site:'M3 4h18v16H3zM3 9h18',subs:'M2 6h20v12H2zM2 10h20',log:'M4 6h16M4 12h16M4 18h10'};
+const ic=k=>`<svg class="i" viewBox="0 0 24 24"><path d="${IC[k]}"/></svg>`;
+const NAV=[['overview','Overview'],['ai','AI Command Center'],['events','Events & Webinars'],['crm','CRM'],['marketing','Marketing'],['site','Website Builder'],['subs','Subscriptions'],['log','Workflow Activity']];
+let S,view='overview',q='',selEv=null,aiBusy=false;
+
+function seed(){const ev=(id,title,d,time,cap,desc)=>({id,title,date:ds(d),time,cap,desc,page:{head:'',sub:'',cta:'Reserve my seat'}});
+ const cu=(i,name,email,status,source)=>({id:'c'+i,name,email,status,source});
+ const R=[[4,1,3],[3,1,2],[6,1,1],[2,1,0],[7,2,1],[1,3,9],[2,3,8],[5,3,7],[8,3,6]];
+ const s={n:20,events:[ev('e1','Product Launch Webinar',6,'16:00',150,'Live walkthrough of our Q4 product release with a Q&A session.'),ev('e2','AI for Operations Workshop',13,'11:30',5,'Hands-on session on automating business workflows with AI.'),ev('e3','Customer Success Roundtable',-4,'15:00',40,'Past session: best practices from our top customers.')],
+ cust:[cu(1,'Aarav Mehta','aarav@finedge.in','Customer','Referral'),cu(2,'Priya Nair','priya@orbitlabs.io','Active','LinkedIn'),cu(3,'Rohan Shah','rohan@brightcart.com','Lead','Website'),cu(4,'Sana Khan','sana@pixelforge.dev','Active','Webinar'),cu(5,'Vikram Rao','vikram@northwind.co','Customer','Referral'),cu(6,'Meera Iyer','meera@lumenhq.com','Lead','LinkedIn'),cu(7,'Kabir Singh','kabir@stackpilot.io','Lead','Webinar'),cu(8,'Ananya Das','ananya@verdant.in','Active','Website')],
+ regs:R.map((r,i)=>({id:'REG-'+(900+i),cid:'c'+r[0],eid:'e'+r[1],ts:Date.now()-r[2]*D-i*36e5})),
+ camps:[{id:'m1',name:'Launch reminder – 24h',eid:'e1',subject:'Tomorrow: {{event}}',body:'Hi {{name}},\n\nA quick reminder that {{event}} starts soon. We saved your seat.\n\nSee you there,\nTeam Kairos',status:'Draft'}],
+ log:[],plan:'Growth',bill:'monthly',subStatus:'Active',chat:[]};
+ const L=(m,t,st,ty)=>s.log.push({ts:Date.now()-m*6e4,type:ty,msg:t,status:st});
+ L(300,'Event created: Product Launch Webinar','Success','Event');L(200,'Campaign draft created: Launch reminder – 24h','Success','Campaign');L(50,'Registration: Priya Nair → Product Launch Webinar','Success','Registration');L(49,'CRM: existing customer linked (priya@orbitlabs.io)','Success','CRM');
+ s.log.reverse();return s}
+const log=(type,msg,status)=>S.log.unshift({ts:Date.now(),type,msg,status});
+const evOf=id=>S.events.find(e=>e.id==id),cuOf=id=>S.cust.find(c=>c.id==id),nReg=id=>S.regs.filter(r=>r.eid==id).length;
+const upcoming=()=>S.events.filter(e=>e.date>=ds(0)).sort((a,b)=>a.date.localeCompare(b.date));
+function toast(m,e){const t=document.createElement('div');t.className='t'+(e?' e':'');t.textContent=m;$('#toast').append(t);setTimeout(()=>t.remove(),3200)}
+
+function register(eid,name,email){name=name.trim();email=email.trim().toLowerCase();const e=evOf(eid);
+ if(!name)return{err:'Full name is required.'};if(!email)return{err:'Email is required.'};
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))return{err:'Please enter a valid email address.'};
+ if(e.date<ds(0))return{err:'Registration is closed: this event has already taken place.'};
+ let c=S.cust.find(x=>x.email==email);
+ if(c&&S.regs.some(r=>r.eid==eid&&r.cid==c.id)){log('Registration','Duplicate blocked: '+email+' → '+e.title,'Error');return{err:email+' is already registered for this event.'}}
+ if(nReg(eid)>=e.cap){log('Registration','Capacity reached for '+e.title+'; rejected '+email,'Error');return{err:'This event is full ('+e.cap+' seats).'}}
+ const isNew=!c;if(isNew){c={id:'c'+(++S.n),name,email,status:'Lead',source:'Event registration'};S.cust.push(c)}
+ const r={id:'REG-'+(1000+ ++S.n),cid:c.id,eid,ts:Date.now()};S.regs.push(r);
+ log('Registration',c.name+' → '+e.title,'Success');log('CRM',isNew?'New customer created: '+email:'Existing customer reused: '+email+' (linked to '+e.title+')','Success');
+ return{ok:1,r,c,e,isNew}}
+
+/* ---------- views ---------- */
+const V={};
+V.overview=()=>{const up=upcoming(),days=[...Array(7)].map((_,i)=>{const d=new Date(Date.now()-(6-i)*D);return{l:d.toLocaleDateString('en-IN',{weekday:'short'}),n:S.regs.filter(r=>new Date(r.ts).toDateString()==d.toDateString()).length}}),mx=Math.max(3,...days.map(d=>d.n));
+ const k=(l,v,s)=>`<div class="card kpi h"><small>${l}</small><b>${v}</b><small>${s}</small></div>`,cnt=(t,s)=>S.log.filter(l=>l.type==t&&(!s||l.status==s)).length;
+ const chart=`<svg viewBox="0 0 560 200" width="100%" role="img" aria-label="Registrations per day">${[0,1,2,3].map(i=>`<line x1="30" x2="550" y1="${20+i*45}" y2="${20+i*45}" stroke="#242D47"/><text x="22" y="${24+i*45}" fill="#8B95B0" font-size="10" text-anchor="end">${Math.round(mx*(3-i)/3)}</text>`).join('')}${days.map((d,i)=>{const h=d.n/mx*135,x=48+i*73;return`<rect x="${x}" y="${155-h}" width="40" height="${h}" rx="5" fill="${i==6?'#8B7CF6':'#4F7CFF'}"/><text x="${x+20}" y="${149-h}" fill="#E6EAF5" font-size="11" text-anchor="middle">${d.n||''}</text><text x="${x+20}" y="180" fill="#8B95B0" font-size="11" text-anchor="middle">${d.l}</text>`}).join('')}</svg>`;
+ const wf=[['Registration → CRM sync',cnt('CRM','Success')+' synced','Success'],['Campaigns awaiting approval',S.camps.filter(c=>c.status=='Pending approval').length+' pending','Pending'],['AI command runs',cnt('AI')+' runs','Simulated'],['Errors / blocked actions',cnt('Registration','Error')+cnt('Error')+' logged',cnt('Registration','Error')?'Error':'Success']];
+ return`<h1>Overview</h1><p class="sub">Live metrics from shared workspace state · Kairos Demo Workspace</p>
+ <div class="grid g4">${k('Total customers',S.cust.length,S.cust.filter(c=>c.status=='Lead').length+' leads')}${k('Upcoming webinars',up.length,'next: '+(up[0]?fd(up[0].date):'—'))}${k('Total registrations',S.regs.length,'across '+S.events.length+' events')}${k('Active campaigns',S.camps.filter(c=>!c.status.startsWith('Sent')).length,S.camps.filter(c=>c.status=='Ready').length+' ready')}</div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h2>Registration trend · last 7 days</h2>${chart}</div>
+ <div class="card"><h2>Workflow status</h2>${wf.map(w=>`<div class="li"><span>${w[0]}<br><small class="mut">${w[1]}</small></span>${pill(w[2])}</div>`).join('')}</div></div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h2>Recent activity</h2>${S.log.slice(0,6).map(l=>`<div class="li"><span>${esc(l.msg)}<br><small class="mut">${l.type} · ${ago(l.ts)}</small></span>${pill(l.status)}</div>`).join('')}</div>
+ <div class="card"><h2>Upcoming events</h2>${up.length?up.map(e=>`<div class="li" style="display:block"><div class="row sp"><b>${esc(e.title)}</b><small class="mut">${fd(e.date)}</small></div><div class="bar" style="margin:8px 0 4px"><i style="width:${Math.min(100,nReg(e.id)/e.cap*100)}%"></i></div><small class="mut">${nReg(e.id)} / ${e.cap} registered</small></div>`).join(''):'<p class="mut">No upcoming events.</p>'}</div></div>`};
+
+V.events=()=>`<div class="row sp"><div><h1>Events & Webinars</h1><p class="sub">Create, edit, and open registration for events.</p></div><button class="btn" data-a="newEv">+ New event</button></div>
+<div class="grid g3">${S.events.map(e=>{const n=nReg(e.id),past=e.date<ds(0);return`<div class="card h"><div class="row sp"><b>${esc(e.title)}</b>${pill(past?'Completed':n>=e.cap?'Full':'Active')}</div><p class="mut" style="min-height:42px">${esc(e.desc)}</p><p>${fd(e.date)} · ${esc(e.time)}</p><div class="bar"><i style="width:${Math.min(100,n/e.cap*100)}%"></i></div><small class="mut">${n} / ${e.cap} registered</small><div class="row" style="margin-top:14px"><button class="btn sm" data-a="reg" data-id="${e.id}">Register</button><button class="btn s sm" data-a="viewEv" data-id="${e.id}">View</button><button class="btn s sm" data-a="editEv" data-id="${e.id}">Edit</button></div></div>`}).join('')}</div>`;
+
+V.crm=()=>`<h1>CRM</h1><p class="sub">Customers are created automatically from event registrations.</p><div class="card"><div class="row sp" style="margin-bottom:12px"><input id="q" placeholder="Search name, email, status, source…" value="${esc(q)}" style="max-width:340px"><small class="mut" id="cc"></small></div><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Registration history</th><th>Status</th><th>Source</th></tr></thead><tbody id="cb"></tbody></table></div></div>`;
+function crmRows(){const t=q.toLowerCase(),rows=S.cust.filter(c=>[c.name,c.email,c.status,c.source].join(' ').toLowerCase().includes(t));
+ $('#cc').textContent=rows.length+' of '+S.cust.length+' customers';
+ $('#cb').innerHTML=rows.map(c=>{const h=S.regs.filter(r=>r.cid==c.id);return`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.email)}</td><td>${h.length?h.map(r=>`<div>${esc(evOf(r.eid)?.title)} <small class="mut">· ${ago(r.ts)}</small></div>`).join(''):'<span class="mut">None</span>'}</td><td>${pill(c.status)}</td><td>${esc(c.source)}</td></tr>`}).join('')||'<tr><td colspan="5" class="mut">No matching customers.</td></tr>'}
+
+const fill=(t,c,e)=>t.replaceAll('{{name}}',c).replaceAll('{{event}}',e?e.title:'(event)').replaceAll('{{date}}',e?fd(e.date):'');
+V.marketing=()=>`<div class="row sp"><div><h1>Marketing</h1><p class="sub">Campaign drafts with an approval step. Sending is simulated — no email is ever sent.</p></div><button class="btn" data-a="newCamp">+ New campaign</button></div>
+<div class="card"><div class="tw"><table><thead><tr><th>Campaign</th><th>Event</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.camps.map(c=>`<tr><td><b>${esc(c.name)}</b><br><small class="mut">${esc(c.subject)}</small></td><td>${esc(evOf(c.eid)?.title||'—')}</td><td>${pill(c.status)}</td><td><div class="row"><button class="btn s sm" data-a="editCamp" data-id="${c.id}">Edit / preview</button>${c.status=='Draft'?`<button class="btn sm" data-a="cs" data-id="${c.id}" data-to="Pending approval">Request approval</button>`:''}${c.status=='Pending approval'?`<button class="btn sm" data-a="cs" data-id="${c.id}" data-to="Ready">Approve</button><button class="btn s sm" data-a="cs" data-id="${c.id}" data-to="Draft">Reject</button>`:''}${c.status=='Ready'?`<button class="btn v sm" data-a="cs" data-id="${c.id}" data-to="Sent (simulated)">Send (simulated)</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="4" class="mut">No campaigns yet.</td></tr>'}</tbody></table></div></div>`;
+
+V.site=()=>{selEv=evOf(selEv)?selEv:S.events[0]?.id;const e=evOf(selEv);if(!e)return'<h1>Website Builder</h1><p class="mut">Create an event first.</p>';const p=e.page;
+ return`<h1>Website Builder</h1><p class="sub">Edit the landing page; the preview reads the selected event's live data.</p><div class="grid g2" style="grid-template-columns:1fr 1.6fr"><div class="card"><label>Event</label><select data-sel>${S.events.map(x=>`<option value="${x.id}" ${x.id==selEv?'selected':''}>${esc(x.title)}</option>`).join('')}</select>
+ <label>Headline (blank = event title)</label><input id="p1" value="${esc(p.head)}"><label>Description (blank = event description)</label><textarea id="p2" rows="3">${esc(p.sub)}</textarea><label>Button label</label><input id="p3" value="${esc(p.cta)}"><div class="row" style="margin-top:14px"><button class="btn" data-a="savePage">Save page</button></div></div>
+ <div class="card"><small class="mut">Preview · ${nReg(e.id)}/${e.cap} registered</small><div class="lp" style="margin-top:10px"><small class="pill Simulated">KAIROS</small><h3 id="v1">${esc(p.head||e.title)}</h3><p class="mut" id="v2">${esc(p.sub||e.desc)}</p><p><b>${fd(e.date)} · ${esc(e.time)}</b></p><button class="btn" data-a="reg" data-id="${e.id}" id="v3">${esc(p.cta||'Register')}</button></div></div></div>`};
+
+const PLANS=[['Starter',29,290,'1 workspace · 500 contacts · basic workflows'],['Growth',79,790,'5 workspaces · 10k contacts · AI workflows'],['Scale',199,1990,'Unlimited · 100k contacts · priority support']];
+V.subs=()=>`<div class="row sp"><div><h1>Subscriptions</h1><p class="sub">All billing is <b>simulated</b> — no payment is processed.</p></div><div class="row"><button class="btn ${S.bill=='monthly'?'':'s'}" data-a="bill" data-id="monthly">Monthly</button><button class="btn ${S.bill=='annual'?'':'s'}" data-a="bill" data-id="annual">Annual</button></div></div>
+<div class="grid g3">${PLANS.map(p=>`<div class="card h" ${p[0]==S.plan?'style="border-color:var(--blue)"':''}><div class="row sp"><b>${p[0]}</b>${p[0]==S.plan?pill(S.subStatus):''}</div><p style="font-size:28px;margin:8px 0"><b>$${S.bill=='monthly'?p[1]:p[2]}</b><small class="mut"> / ${S.bill=='monthly'?'month':'year'}</small></p><p class="mut">${p[3]}</p><button class="btn ${p[0]==S.plan?'s':''}" data-a="plan" data-id="${p[0]}" ${p[0]==S.plan?'disabled':''}>${p[0]==S.plan?'Current plan':'Switch (simulated)'}</button></div>`).join('')}</div>
+<div class="card" style="margin-top:16px"><h2>Subscription status</h2><div class="tw"><table><thead><tr><th>Workspace</th><th>Plan</th><th>Billing</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>Kairos Demo Workspace</td><td>${S.plan}</td><td>${S.bill}</td><td>${pill(S.subStatus)}</td><td><div class="row"><button class="btn s sm" data-a="trial">Toggle trial (simulated)</button><button class="btn s sm" data-a="pd">Simulate failed payment</button></div></td></tr></tbody></table></div></div>`;
+
+V.log=()=>`<h1>Workflow Activity</h1><p class="sub">Chronological log of every action in this session (newest first).</p><div class="card"><div class="tw"><table><thead><tr><th>Time</th><th>Type</th><th>Event</th><th>Status</th></tr></thead><tbody>${S.log.map(l=>`<tr><td style="white-space:nowrap">${new Date(l.ts).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'})}</td><td>${l.type}</td><td>${esc(l.msg)}</td><td>${pill(l.status)}</td></tr>`).join('')}</tbody></table></div></div>`;
+
+V.ai=()=>`<h1>AI Command Center</h1><p class="sub">Steps tagged <span class="pill Success">ACTUAL ACTION</span> change real app state. Steps tagged <span class="pill Simulated">SIMULATED AI</span> are scripted text — no AI API or email service is connected.</p>
+<div class="card"><div class="chat">${S.chat.map(m=>m.role=='u'?`<div class="me">${esc(m.t)}</div>`:`<div><div class="row"><b>NEXUS</b>${pill('Simulated')}</div><p>${esc(m.t)}</p>${(m.steps||[]).map((s,i)=>`<div class="step"><span class="n">${i+1}</span><div style="flex:1"><div class="row sp"><b>${esc(s.t)}</b><span>${pill(s.st)} <span class="pill ${s.k=='a'?'Success':'Simulated'}">${s.k=='a'?'ACTUAL ACTION':'SIMULATED AI'}</span></span></div><small class="mut">${esc(s.res||'…')}</small></div></div>`).join('')}</div>`).join('')||'<p class="mut">Try a command below.</p>'}</div>
+<div class="row" style="margin:14px 0 10px"><button class="btn s sm" data-a="chip">Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign.</button></div>
+<div class="row" style="flex-wrap:nowrap"><input id="cmd" placeholder="Describe a workflow…" ${aiBusy?'disabled':''}><button class="btn" data-a="run" ${aiBusy?'disabled':''}>Run</button></div></div>`;
+
+/* ---------- modals ---------- */
+const open=h=>{$('#mb').innerHTML=h;$('#modal').classList.add('on')},close=()=>$('#modal').classList.remove('on');
+const fld=(l,n,v='',t='text',x='')=>`<label>${l}</label><input name="${n}" type="${t}" value="${esc(v)}" ${x}>`;
+function evForm(e){e=e||{};return`<h2>${e.id?'Edit event':'New event'}</h2><form data-f="ev" data-id="${e.id||''}" novalidate>${fld('Title *','title',e.title)}<label>Description</label><textarea name="desc" rows="3">${esc(e.desc)}</textarea>${fld('Date *','date',e.date,'date')}${fld('Time *','time',e.time,'time')}${fld('Registration capacity *','cap',e.cap||100,'number','min="1"')}<div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Save event</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`}
+function campForm(c){c=c||{subject:'Reminder: {{event}}',body:'Hi {{name}},\n\nJust a reminder that {{event}} is on {{date}}. We look forward to seeing you!\n\nTeam Kairos',eid:S.events[0]?.id,name:''};
+ return`<h2>${c.id?'Edit campaign':'New campaign draft'}</h2><form data-f="camp" data-id="${c.id||''}" novalidate>${fld('Campaign name *','name',c.name)}<label>Event *</label><select name="eid">${S.events.map(e=>`<option value="${e.id}" ${e.id==c.eid?'selected':''}>${esc(e.title)}</option>`).join('')}</select>${fld('Subject *','subject',c.subject)}<label>Message * (use {{name}}, {{event}}, {{date}})</label><textarea name="body" rows="5">${esc(c.body)}</textarea><label>Preview (as sample recipient "Alex")</label><div class="mail" id="pv"></div><div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Save draft</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`}
+function updPv(){const f=$('#mb form[data-f=camp]');if(!f)return;const e=evOf(f.eid.value);$('#pv').textContent='Subject: '+fill(f.subject.value,'Alex',e)+'\n\n'+fill(f.body.value,'Alex',e)}
+function regForm(e){return`<h2>Register: ${esc(e.title)}</h2><p class="mut">${fd(e.date)} · ${esc(e.time)} · ${nReg(e.id)}/${e.cap} seats taken</p><form data-f="reg" data-id="${e.id}" novalidate>${fld('Full name *','name')}${fld('Email *','email','','email')}<div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Confirm registration</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`}
+
+/* ---------- AI workflow ---------- */
+const POOL=[['Ishaan Verma','ishaan@cloudnine.io'],['Tara Joshi','tara@helixworks.com'],['Neil D\'Souza','neil@harborlane.co']];
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function runAI(cmd){if(!cmd.trim()||aiBusy)return;aiBusy=true;S.chat.push({role:'u',t:cmd});log('AI','Command received: '+cmd.slice(0,70),'Simulated');
+ if(!/webinar|event|workshop/i.test(cmd)){S.chat.push({role:'a',t:'(Simulated) I only have a scripted demo workflow. Try: "Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign."'});aiBusy=false;return render()}
+ const m=cmd.match(/create (?:a|an) ([a-z0-9 -]+?) (webinar|workshop|event)/i),cap=s=>s.replace(/\b\w/g,c=>c.toUpperCase()),title=m?cap(m[1]+' '+m[2]):'Product Webinar';
+ const steps=[['Create event "'+title+'"','a'],['Prepare registration page','a'],['Add registrants to CRM','a'],['Draft reminder campaign','a'],['Write reminder copy with AI','s']].map(([t,k])=>({t,k,st:'Pending'}));
+ const msg={role:'a',t:'(Simulated planner) I split your command into this ordered plan and will run each step:',steps};S.chat.push(msg);render();
+ const go=async(i,fn)=>{steps[i].st='Running';render();await wait(650);try{steps[i].res=fn();steps[i].st='Success'}catch(e){steps[i].res=e.message;steps[i].st='Error';log('Error','AI step failed: '+e.message,'Error')}render()};
+ let ev;await go(0,()=>{ev=S.events.find(e=>e.title.toLowerCase()==title.toLowerCase());if(ev)return'Event already exists — reused it (no duplicate created).';ev={id:'e'+(++S.n),title,desc:'Created via AI Command Center demo workflow.',date:ds(14),time:'16:00',cap:100,page:{head:'',sub:'',cta:'Reserve my seat'}};S.events.push(ev);log('Event','Event created by AI workflow: '+title,'Success');return'Created for '+fd(ev.date)+', capacity 100.'});
+ await go(1,()=>{selEv=ev.id;log('Website','Landing page ready for '+title,'Success');return'Landing page is live in Website Builder with this event\'s data.'});
+ await go(2,()=>{let a=0,sk=0;POOL.forEach(([n,e])=>{const r=register(ev.id,n,e);r.ok?a++:sk++});return a+' demo registrants registered and synced to CRM; '+sk+' skipped (already registered).'});
+ await go(3,()=>{const c={id:'m'+(++S.n),name:title+' reminder',eid:ev.id,subject:'Reminder: {{event}}',body:'',status:'Draft'};c.body='Hi {{name}},\n\n{{event}} is on {{date}}. Your seat is confirmed — see you there!\n\nTeam Kairos';S.camps.push(c);log('Campaign','Campaign draft created by AI workflow: '+c.name,'Success');return'Draft saved in Marketing (needs your approval; nothing is sent).'});
+ await go(4,()=>{log('AI','Simulated reminder copy generated','Simulated');return'Scripted template text — no real AI model was called.'});
+ msg.t='Done. Steps 1–4 changed real app state (see CRM, Marketing, Workflow Activity). Step 5 and this narration are simulated.';aiBusy=false;render()}
+
+/* ---------- shell ---------- */
+function render(){const cmd=$('#cmd')?.value;
+ $('#side').innerHTML=`<div class="brand"><b>NEXUS</b><small>AI Business Operating Platform</small></div><div class="ws"><span>Workspace</span><b>Kairos Demo Workspace</b></div>${NAV.map(n=>`<button class="nav ${view==n[0]?'on':''}" data-a="nav" data-id="${n[0]}">${ic(n[0])}${n[1]}</button>`).join('')}<div style="flex:1"></div><button class="btn s sm" data-a="reset">↺ Reset demo data</button><small class="mut" style="padding:8px">Team Kairos · CRCE Bit N Build<br>In-memory demo · no backend</small>`;
+ $('#app').innerHTML=V[view]();if(view=='crm')crmRows();if(view=='ai'&&cmd)$('#cmd').value=cmd}
+const go=v=>{view=v;$('#side').classList.remove('open');render();scrollTo(0,0)};
+const frm=f=>Object.fromEntries(new FormData(f));
+const showErr=(f,m)=>{const b=f.querySelector('.err');b.textContent=m;b.hidden=false};
+
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-a]');if(!b){if(ev.target.id=='modal')close();return}const a=b.dataset.a,id=b.dataset.id;
+ if(a=='nav')go(id);else if(a=='menu')$('#side').classList.toggle('open');else if(a=='close')close();
+ else if(a=='reset'){if(confirm('Reset all demo data to the original seed?')){S=seed();selEv=null;render();toast('Demo data reset.')}}
+ else if(a=='newEv')open(evForm());else if(a=='editEv')open(evForm(evOf(id)));
+ else if(a=='reg'){const e=evOf(id);open(e.date<ds(0)?`<h2>${esc(e.title)}</h2><div class="err">Registration is closed: this event has already taken place.</div><div class="row" style="margin-top:16px"><button class="btn s" data-a="close">Close</button></div>`:regForm(e))}
+ else if(a=='viewEv'){const e=evOf(id),rs=S.regs.filter(r=>r.eid==id);open(`<h2>${esc(e.title)}</h2><p>${esc(e.desc)}</p><p class="mut">${fd(e.date)} · ${esc(e.time)} · ${rs.length}/${e.cap} registered</p><h2 style="margin-top:16px">Registrants</h2>${rs.map(r=>`<div class="li"><span>${esc(cuOf(r.cid).name)}<br><small class="mut">${esc(cuOf(r.cid).email)}</small></span><small class="mut">${r.id}</small></div>`).join('')||'<p class="mut">None yet.</p>'}<div class="row" style="margin-top:16px"><button class="btn" data-a="reg" data-id="${id}">Register someone</button><button class="btn s" data-a="close">Close</button></div>`)}
+ else if(a=='newCamp')open(campForm()),updPv();else if(a=='editCamp')open(campForm(S.camps.find(c=>c.id==id))),updPv();
+ else if(a=='cs'){const c=S.camps.find(x=>x.id==id),to=b.dataset.to;c.status=to;
+  log('Campaign',{'Pending approval':'Approval requested: ','Ready':'Approved (marked ready): ','Draft':'Approval rejected, back to draft: ','Sent (simulated)':'SIMULATED send (no email sent): '}[to]+c.name,to=='Sent (simulated)'?'Simulated':to=='Draft'?'Pending':'Success');render();toast(to=='Sent (simulated)'?'Simulated send — no email was sent.':'Campaign → '+to)}
+ else if(a=='savePage'){const e=evOf(selEv);e.page={head:$('#p1').value,sub:$('#p2').value,cta:$('#p3').value};log('Website','Landing page saved for '+e.title,'Success');toast('Landing page saved.');render()}
+ else if(a=='bill'){S.bill=id;render()}else if(a=='plan'){S.plan=id;S.subStatus='Active';log('Subscription','SIMULATED plan switch to '+id,'Simulated');render();toast('Plan switched (simulated).')}
+ else if(a=='trial'){S.subStatus=S.subStatus=='Trial'?'Active':'Trial';log('Subscription','SIMULATED status → '+S.subStatus,'Simulated');render()}
+ else if(a=='pd'){S.subStatus='Past due';log('Error','SIMULATED failed payment','Error');render();toast('Simulated failed payment.',1)}
+ else if(a=='chip'){runAI(b.textContent)}else if(a=='run'){const i=$('#cmd');runAI(i.value);}});
+document.addEventListener('submit',ev=>{const f=ev.target;if(!f.dataset.f)return;ev.preventDefault();const d=frm(f),id=f.dataset.id;
+ if(f.dataset.f=='reg'){const r=register(id,d.name,d.email);if(r.err)return showErr(f,r.err);render();
+  $('#mb').innerHTML=`<h2>Registration confirmed ✓</h2><div class="okb"><b>${esc(r.c.name)}</b>, you're in for <b>${esc(r.e.title)}</b><br>${fd(r.e.date)} · ${esc(r.e.time)}<br><small>Confirmation ${r.r.id} · ${esc(r.c.email)}</small></div><p class="mut">${r.isNew?'New CRM customer created.':'Existing CRM customer reused.'} Dashboard and activity updated. (Confirmation email is simulated.)</p><div class="row"><button class="btn" data-a="close">Done</button></div>`;toast('Registered '+r.c.name)}
+ else if(f.dataset.f=='ev'){const cap=parseInt(d.cap,10);if(!d.title.trim())return showErr(f,'Title is required.');if(!d.date)return showErr(f,'Date is required.');if(!d.time)return showErr(f,'Time is required.');if(!(cap>=1))return showErr(f,'Capacity must be a whole number of at least 1.');
+  if(id){const e=evOf(id);if(cap<nReg(id))return showErr(f,'Capacity cannot be below current registrations ('+nReg(id)+').');Object.assign(e,{title:d.title.trim(),desc:d.desc.trim(),date:d.date,time:d.time,cap});log('Event','Event updated: '+e.title,'Success')}
+  else{S.events.push({id:'e'+(++S.n),title:d.title.trim(),desc:d.desc.trim(),date:d.date,time:d.time,cap,page:{head:'',sub:'',cta:'Reserve my seat'}});log('Event','Event created: '+d.title.trim(),'Success')}
+  close();render();toast('Event saved.')}
+ else if(f.dataset.f=='camp'){if(!d.name.trim()||!d.subject.trim()||!d.body.trim())return showErr(f,'Name, subject and message are all required.');
+  if(id){const c=S.camps.find(x=>x.id==id);Object.assign(c,{name:d.name.trim(),eid:d.eid,subject:d.subject,body:d.body});if(c.status!='Draft'){c.status='Draft';log('Campaign','Edited after approval step → returned to Draft: '+c.name,'Pending')}else log('Campaign','Campaign draft updated: '+c.name,'Success')}
+  else{S.camps.push({id:'m'+(++S.n),name:d.name.trim(),eid:d.eid,subject:d.subject,body:d.body,status:'Draft'});log('Campaign','Campaign draft created: '+d.name.trim(),'Success')}
+  close();render();toast('Campaign draft saved.')}});
+document.addEventListener('input',e=>{if(e.target.id=='q'){q=e.target.value;crmRows()}
+ else if(e.target.closest('form[data-f=camp]'))updPv();
+ else if(['p1','p2','p3'].includes(e.target.id)){const x=evOf(selEv);$('#v1').textContent=$('#p1').value||x.title;$('#v2').textContent=$('#p2').value||x.desc;$('#v3').textContent=$('#p3').value||'Register'}});
+document.addEventListener('change',e=>{if(e.target.dataset.sel!==undefined){selEv=e.target.value;render()}else if(e.target.closest('form[data-f=camp]'))updPv()});
+document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='cmd')runAI(e.target.value);if(e.key=='Escape')close()});
+S=seed();render();
+</script></body></html>
