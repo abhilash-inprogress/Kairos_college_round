@@ -35,12 +35,24 @@ function toOperations(previousState, nextState, previousChat = [], nextChat = []
     billing: previousState.billing,
     subscriptionStatus: previousState.subscriptionStatus,
     counter: previousState.counter,
+    stripeCustomerId: previousState.stripeCustomerId || null,
+    stripeSubscriptionId: previousState.stripeSubscriptionId || null,
+    stripePriceId: previousState.stripePriceId || null,
+    stripeCurrentPeriodEnd: previousState.stripeCurrentPeriodEnd || null,
+    stripeCancelAtPeriodEnd: Boolean(previousState.stripeCancelAtPeriodEnd),
+    stripeLastEventCreated: previousState.stripeLastEventCreated || null,
   };
   const nextSettings = {
     plan: nextState.plan,
     billing: nextState.billing,
     subscriptionStatus: nextState.subscriptionStatus,
     counter: nextState.counter,
+    stripeCustomerId: nextState.stripeCustomerId || null,
+    stripeSubscriptionId: nextState.stripeSubscriptionId || null,
+    stripePriceId: nextState.stripePriceId || null,
+    stripeCurrentPeriodEnd: nextState.stripeCurrentPeriodEnd || null,
+    stripeCancelAtPeriodEnd: Boolean(nextState.stripeCancelAtPeriodEnd),
+    stripeLastEventCreated: nextState.stripeLastEventCreated || null,
   };
   if (JSON.stringify(previousSettings) !== JSON.stringify(nextSettings)) {
     operations.push({ operation: "upsert", record_type: "settings", record_key: "settings", data: nextSettings });
@@ -84,8 +96,46 @@ export async function loadWorkspace(seedState) {
       .filter((row) => row.record_type === recordType)
       .map((row) => row.data);
   }
+  state.events = state.events.map((event) => ({
+    ...event,
+    ...(event.isDemo === undefined &&
+      (["e1", "e2", "e3"].includes(event.id) ||
+        event.description === "Created via AI Command Center demo workflow.")
+      ? { isDemo: true }
+      : {}),
+  }));
+  const demoEventIds = new Set(state.events.filter((event) => event.isDemo === true).map((event) => event.id));
+  state.customers = state.customers.map((customer) => ({
+    ...customer,
+    ...(customer.isDemo === undefined && /^c[1-8]$/.test(customer.id) ? { isDemo: true } : {}),
+  }));
+  state.registrations = state.registrations.map((registration) => ({
+    ...registration,
+    ...(registration.isDemo === undefined && /^REG-90[0-8]$/.test(registration.id) ? { isDemo: true } : {}),
+  }));
+  state.campaigns = state.campaigns.map((campaign) => ({
+    ...campaign,
+    ...(campaign.isDemo === undefined &&
+      (campaign.id === "m1" || demoEventIds.has(campaign.eventId))
+      ? { isDemo: true }
+      : {}),
+  }));
+  state.activity = state.activity.map((item) => ({
+    ...item,
+    ...(item.isDemo === undefined &&
+      (/^activity-[1-4]$/.test(item.id) || item.status === "Simulated" ||
+        item.message?.includes("AI workflow"))
+      ? { isDemo: true }
+      : {}),
+  }));
   const settings = records.find((row) => row.record_type === "settings")?.data;
-  if (settings) Object.assign(state, settings);
+  if (settings) {
+    Object.assign(state, settings);
+    if (!settings.stripeSubscriptionId && !settings.stripeCustomerId) {
+      state.plan = "Starter";
+      state.subscriptionStatus = "Free";
+    }
+  }
 
   const chat = records
     .filter((row) => row.record_type === "chat_message")
@@ -104,6 +154,65 @@ export async function saveWorkspace(previousState, nextState, previousChat = [],
 export async function sendCampaignEmail(campaignId) {
   const { data, error } = await requireSupabase().functions.invoke("send-campaign", {
     body: { campaignId },
+  });
+  if (error) {
+    if (error.name === "FunctionsFetchError") {
+      throw new Error("Could not get a response from the send-campaign Supabase Edge Function. Confirm it is deployed to the linked project; refresh the campaign status and check function logs before retrying because the request may have been processed.");
+    }
+    const response = error.context instanceof Response ? error.context : null;
+    const result = response ? await response.clone().json().catch(() => null) : null;
+    const message = result?.error || error.message;
+    throw new Error(result?.warning ? `${message} ${result.warning}` : message);
+  }
+  if (!data || !["Sent", "Delivery needs review", "Ready"].includes(data.status) ||
+    !Number.isInteger(data.sent) || !Number.isInteger(data.failed)) {
+    throw new Error("The email service returned an invalid result. Check the Supabase Edge Function logs before retrying.");
+  }
+  return data;
+}
+
+export async function proposeAiWorkflow(prompt) {
+  const { data, error } = await requireSupabase().functions.invoke("ai-workflow", {
+    body: { prompt },
+  });
+  if (error) {
+    const response = error.context instanceof Response ? error.context : null;
+    const result = response ? await response.clone().json().catch(() => null) : null;
+    throw new Error(result?.error || error.message);
+  }
+  return data;
+}
+
+export async function startStripeCheckout(plan) {
+  const { data, error } = await requireSupabase().functions.invoke("stripe-billing", {
+    body: { action: "checkout", plan },
+  });
+  if (error) {
+    if (error.name === "FunctionsFetchError") {
+      throw new Error("Could not reach the Supabase stripe-billing Edge Function. Deploy it to your Supabase project and check the browser's network connection.");
+    }
+    const response = error.context instanceof Response ? error.context : null;
+    const result = response ? await response.clone().json().catch(() => null) : null;
+    throw new Error(result?.error || error.message);
+  }
+  return data;
+}
+
+export async function openStripePortal() {
+  const { data, error } = await requireSupabase().functions.invoke("stripe-billing", {
+    body: { action: "portal" },
+  });
+  if (error) {
+    const response = error.context instanceof Response ? error.context : null;
+    const result = response ? await response.clone().json().catch(() => null) : null;
+    throw new Error(result?.error || error.message);
+  }
+  return data;
+}
+
+export async function syncStripeSubscription(sessionId) {
+  const { data, error } = await requireSupabase().functions.invoke("stripe-billing", {
+    body: { action: "sync", ...(sessionId ? { sessionId } : {}) },
   });
   if (error) {
     const response = error.context instanceof Response ? error.context : null;

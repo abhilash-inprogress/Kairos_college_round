@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -34,6 +35,460 @@ const IC={overview:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',ai:'M12 
 const ic=k=>`<svg class="i" viewBox="0 0 24 24"><path d="${IC[k]}"/></svg>`;
 const NAV=[['overview','Overview'],['ai','AI Command Center'],['events','Events & Webinars'],['crm','CRM'],['marketing','Marketing'],['site','Website Builder'],['subs','Subscriptions'],['log','Workflow Activity']];
 let S,view='overview',q='',selEv=null,aiBusy=false;
+=======
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>NEXUS · AI Business Operating Platform</title>
+    <style>
+      :root {
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        color-scheme: light;
+        --bg: #f5f6fb;
+        --card: #ffffff;
+        --bd: #e5e7f0;
+        --hv: #f2f3ff;
+        --tx: #20233a;
+        --mut: #777c96;
+        --blue: #6757e8;
+        --vio: #a14de0;
+        --ok: #16845b;
+        --warn: #a7660a;
+        --err: #f8254c;
+        --f: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--tx);
+        font: 14px/1.5 var(--f);
+      }
+      #side {
+        position: fixed;
+        left: 0;
+        top: env(safe-area-inset-top, 0px);
+        bottom: 0;
+        width: 236px;
+        background: #0e1426;
+        border-right: 1px solid var(--bd);
+        padding: 18px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        z-index: 20;
+        transition: transform 0.2s;
+      }
+      .brand {
+        padding: 4px 8px 14px;
+      }
+      .brand b {
+        font-size: 19px;
+        letter-spacing: 0.14em;
+      }
+      .brand small {
+        display: block;
+        color: var(--mut);
+        font-size: 11px;
+      }
+      .ws {
+        margin: 0 4px 10px;
+        padding: 8px 10px;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        font-size: 12px;
+        color: var(--mut);
+      }
+      .ws b {
+        display: block;
+        color: var(--tx);
+        font-weight: 600;
+      }
+      .nav {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 9px 10px;
+        border-radius: 8px;
+        color: var(--mut);
+        background: none;
+        border: 0;
+        font: inherit;
+        cursor: pointer;
+        text-align: left;
+        width: 100%;
+      }
+      .nav:hover {
+        background: var(--hv);
+        color: var(--tx);
+      }
+      .nav.on {
+        background: #1b2547;
+        color: #fff;
+        box-shadow: inset 3px 0 var(--blue);
+      }
+      svg.i {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex: none;
+      }
+      main {
+        margin-left: 236px;
+        padding: 24px 28px 48px;
+        max-width: 1280px;
+      }
+      #top {
+        display: none;
+      }
+      h1 {
+        font-size: 22px;
+        margin: 0 0 2px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 0 0 12px;
+      }
+      .sub {
+        color: var(--mut);
+        margin: 0 0 20px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+      }
+      .g4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .g2 {
+        grid-template-columns: 2fr 1fr;
+      }
+      .g3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 18px;
+        min-width: 0;
+      }
+      .card.h:hover {
+        border-color: #34406a;
+      }
+      .kpi small {
+        color: var(--mut);
+      }
+      .kpi b {
+        display: block;
+        font-size: 28px;
+        margin-top: 4px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .sp {
+        justify-content: space-between;
+      }
+      .btn {
+        background: var(--blue);
+        color: #fff;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #6189ff;
+      }
+      .btn.s {
+        background: transparent;
+        border-color: var(--bd);
+        color: var(--tx);
+      }
+      .btn.s:hover {
+        background: var(--hv);
+      }
+      .btn.v {
+        background: var(--vio);
+      }
+      .btn.sm {
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        background: #0e1426;
+        border: 1px solid var(--bd);
+        color: var(--tx);
+        border-radius: 8px;
+        padding: 9px 11px;
+        font: inherit;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: 2px solid #4f7cff66;
+        border-color: var(--blue);
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--mut);
+        margin: 12px 0 4px;
+      }
+      .tw {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: left;
+        color: var(--mut);
+        font-weight: 500;
+        font-size: 12px;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--bd);
+        white-space: nowrap;
+      }
+      td {
+        padding: 11px 10px;
+        border-bottom: 1px solid var(--bd);
+        vertical-align: top;
+      }
+      tr:hover td {
+        background: var(--hv);
+      }
+      .pill {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 99px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1px solid;
+        white-space: nowrap;
+      }
+      .Success,
+      .Active,
+      .Customer,
+      .Ready,
+      .Approved {
+        color: var(--ok);
+        border-color: #34c58a55;
+        background: #34c58a14;
+      }
+      .Pending,
+      .Lead,
+      .Draft,
+      .Trial,
+      .Pending-approval {
+        color: var(--warn);
+        border-color: #f0b24b55;
+        background: #f0b24b14;
+      }
+      .Error,
+      .Past-due {
+        color: var(--err);
+        border-color: #f0616d55;
+        background: #f0616d14;
+      }
+      .Simulated,
+      .Sent,
+      .Running {
+        color: var(--vio);
+        border-color: #8b7cf655;
+        background: #8b7cf614;
+      }
+      .err {
+        color: var(--err);
+        background: #f0616d14;
+        border: 1px solid #f0616d44;
+        border-radius: 8px;
+        padding: 8px 10px;
+        margin-top: 12px;
+      }
+      .okb {
+        color: var(--ok);
+        background: #34c58a14;
+        border: 1px solid #34c58a44;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 6px;
+      }
+      .mut {
+        color: var(--mut);
+      }
+      .bar {
+        height: 6px;
+        background: #0e1426;
+        border-radius: 9px;
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: var(--blue);
+      }
+      .li {
+        padding: 10px 0;
+        border-bottom: 1px solid var(--bd);
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+      }
+      .li:last-child {
+        border: 0;
+      }
+      #modal {
+        position: fixed;
+        inset: 0;
+        background: #05081099;
+        display: none;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 40px 14px;
+        overflow: auto;
+        z-index: 50;
+      }
+      #modal.on {
+        display: flex;
+      }
+      #mb {
+        background: var(--card);
+        border: 1px solid var(--bd);
+        border-radius: 14px;
+        padding: 22px;
+        width: 100%;
+        max-width: 520px;
+      }
+      #toast {
+        position: fixed;
+        right: 16px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        z-index: 60;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .t {
+        background: var(--card);
+        border: 1px solid var(--bd);
+        border-left: 3px solid var(--ok);
+        padding: 10px 14px;
+        border-radius: 8px;
+        max-width: 320px;
+      }
+      .t.e {
+        border-left-color: var(--err);
+      }
+      .chat {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .me {
+        align-self: flex-end;
+        background: #1b2547;
+        border-radius: 12px;
+        padding: 10px 14px;
+        max-width: 80%;
+      }
+      .step {
+        display: flex;
+        gap: 10px;
+        padding: 10px 0;
+        border-top: 1px solid var(--bd);
+      }
+      .step .n {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #1b2547;
+        text-align: center;
+        font-size: 12px;
+        line-height: 22px;
+        flex: none;
+      }
+      .lp {
+        background: #0e1426;
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 40px 24px;
+        text-align: center;
+      }
+      .lp h3 {
+        font-size: 26px;
+        margin: 8px 0;
+      }
+      .mail {
+        background: #0e1426;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        padding: 12px;
+        white-space: pre-wrap;
+      }
+      @media (max-width: 980px) {
+        .g4 {
+          grid-template-columns: 1fr 1fr;
+        }
+        .g2,
+        .g3 {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 860px) {
+        #side {
+          transform: translateX(-100%);
+        }
+        #side.open {
+          transform: none;
+        }
+        main {
+          margin-left: 0;
+          padding: 14px 14px 40px;
+        }
+        #top {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 14px;
+        }
+      }
+      @media (max-width: 480px) {
+        .g4 {
+          grid-template-columns: 1fr;
+        }
+      }
+>>>>>>> origin/prachi
 
 function seed(){const ev=(id,title,d,time,cap,desc)=>({id,title,date:ds(d),time,cap,desc,page:{head:'',sub:'',cta:'Reserve my seat'}});
  const cu=(i,name,email,status,source)=>({id:'c'+i,name,email,status,source});
@@ -135,6 +590,7 @@ async function runAI(cmd){if(!cmd.trim()||aiBusy)return;aiBusy=true;S.chat.push(
  await go(4,()=>{log('AI','Simulated reminder copy generated','Simulated');return'Scripted template text — no real AI model was called.'});
  msg.t='Done. Steps 1–4 changed real app state (see CRM, Marketing, Workflow Activity). Step 5 and this narration are simulated.';aiBusy=false;render()}
 
+<<<<<<< HEAD
 /* ---------- shell ---------- */
 function render(){const cmd=$('#cmd')?.value;document.body.dataset.theme=localStorage.getItem('nexus-theme')||'dark';const themeBtn=$('.theme-toggle');if(themeBtn)themeBtn.textContent=document.body.dataset.theme=='light'?'☾ Theme':'☼ Theme';
  $('#side').innerHTML=`<div class="brand"><span><b>NEXUS</b><small>AI Business Operating Platform</small></span></div><div class="ws"><span>Active workspace</span><b>Kairos Demo Workspace</b></div>${NAV.map(n=>`<button class="nav ${view==n[0]?'on':''}" data-a="nav" data-id="${n[0]}">${ic(n[0])}${n[1]}</button>`).join('')}<div style="flex:1"></div><div class="ws"><span>● Platform status</span><b>Demo systems operational</b></div><button class="btn s sm" data-a="reset">↺ Reset demo data</button><small class="mut" style="padding:8px">Team Kairos · CRCE Bit N Build<br>In-memory demo · no backend</small>`;
@@ -175,3 +631,234 @@ document.addEventListener('change',e=>{if(e.target.dataset.sel!==undefined){selE
 document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='cmd')runAI(e.target.value);if(e.key=='Escape')close()});
 S=seed();render();
 </script></body></html>
+=======
+      /* ---------- shell ---------- */
+      function render() {
+        const cmd = $("#cmd")?.value;
+        $("#side").innerHTML =
+          `<div class="brand"><b>NEXUS</b><small>AI Business Operating Platform</small></div><div class="ws"><span>Workspace</span><b>Kairos Demo Workspace</b></div>${NAV.map((n) => `<button class="nav ${view == n[0] ? "on" : ""}" data-a="nav" data-id="${n[0]}">${ic(n[0])}${n[1]}</button>`).join("")}<div style="flex:1"></div><small class="mut" style="padding:8px">Team Kairos · CRCE Bit N Build<br>In-memory demo · no backend</small>`;
+        $("#app").innerHTML = V[view]();
+        if (view == "crm") crmRows();
+        if (view == "ai" && cmd) $("#cmd").value = cmd;
+      }
+      const go = (v) => {
+        view = v;
+        $("#side").classList.remove("open");
+        render();
+        scrollTo(0, 0);
+      };
+      const frm = (f) => Object.fromEntries(new FormData(f));
+      const showErr = (f, m) => {
+        const b = f.querySelector(".err");
+        b.textContent = m;
+        b.hidden = false;
+      };
+
+      document.addEventListener("click", (ev) => {
+        const b = ev.target.closest("[data-a]");
+        if (!b) {
+          if (ev.target.id == "modal") close();
+          return;
+        }
+        const a = b.dataset.a,
+          id = b.dataset.id;
+        if (a == "nav") go(id);
+        else if (a == "menu") $("#side").classList.toggle("open");
+        else if (a == "close") close();
+        else if (a == "newEv") open(evForm());
+        else if (a == "editEv") open(evForm(evOf(id)));
+        else if (a == "reg") {
+          const e = evOf(id);
+          open(
+            e.date < ds(0)
+              ? `<h2>${esc(e.title)}</h2><div class="err">Registration is closed: this event has already taken place.</div><div class="row" style="margin-top:16px"><button class="btn s" data-a="close">Close</button></div>`
+              : regForm(e),
+          );
+        } else if (a == "viewEv") {
+          const e = evOf(id),
+            rs = S.regs.filter((r) => r.eid == id);
+          open(
+            `<h2>${esc(e.title)}</h2><p>${esc(e.desc)}</p><p class="mut">${fd(e.date)} · ${esc(e.time)} · ${rs.length}/${e.cap} registered</p><h2 style="margin-top:16px">Registrants</h2>${rs.map((r) => `<div class="li"><span>${esc(cuOf(r.cid).name)}<br><small class="mut">${esc(cuOf(r.cid).email)}</small></span><small class="mut">${r.id}</small></div>`).join("") || '<p class="mut">None yet.</p>'}<div class="row" style="margin-top:16px"><button class="btn" data-a="reg" data-id="${id}">Register someone</button><button class="btn s" data-a="close">Close</button></div>`,
+          );
+        } else if (a == "newCamp") (open(campForm()), updPv());
+        else if (a == "editCamp")
+          (open(campForm(S.camps.find((c) => c.id == id))), updPv());
+        else if (a == "cs") {
+          const c = S.camps.find((x) => x.id == id),
+            to = b.dataset.to;
+          c.status = to;
+          log(
+            "Campaign",
+            {
+              "Pending approval": "Approval requested: ",
+              Ready: "Approved (marked ready): ",
+              Draft: "Approval rejected, back to draft: ",
+              "Sent (simulated)": "SIMULATED send (no email sent): ",
+            }[to] + c.name,
+            to == "Sent (simulated)"
+              ? "Simulated"
+              : to == "Draft"
+                ? "Pending"
+                : "Success",
+          );
+          render();
+          toast(
+            to == "Sent (simulated)"
+              ? "Simulated send — no email was sent."
+              : "Campaign → " + to,
+          );
+        } else if (a == "savePage") {
+          const e = evOf(selEv);
+          e.page = {
+            head: $("#p1").value,
+            sub: $("#p2").value,
+            cta: $("#p3").value,
+          };
+          log("Website", "Landing page saved for " + e.title, "Success");
+          toast("Landing page saved.");
+          render();
+        } else if (a == "bill") {
+          S.bill = id;
+          render();
+        } else if (a == "plan") {
+          S.plan = id;
+          S.subStatus = "Active";
+          log("Subscription", "SIMULATED plan switch to " + id, "Simulated");
+          render();
+          toast("Plan switched (simulated).");
+        } else if (a == "trial") {
+          S.subStatus = S.subStatus == "Trial" ? "Active" : "Trial";
+          log("Subscription", "SIMULATED status → " + S.subStatus, "Simulated");
+          render();
+        } else if (a == "pd") {
+          S.subStatus = "Past due";
+          log("Error", "SIMULATED failed payment", "Error");
+          render();
+          toast("Simulated failed payment.", 1);
+        } else if (a == "chip") {
+          runAI(b.textContent);
+        } else if (a == "run") {
+          const i = $("#cmd");
+          runAI(i.value);
+        }
+      });
+      document.addEventListener("submit", (ev) => {
+        const f = ev.target;
+        if (!f.dataset.f) return;
+        ev.preventDefault();
+        const d = frm(f),
+          id = f.dataset.id;
+        if (f.dataset.f == "reg") {
+          const r = register(id, d.name, d.email);
+          if (r.err) return showErr(f, r.err);
+          render();
+          $("#mb").innerHTML =
+            `<h2>Registration confirmed ✓</h2><div class="okb"><b>${esc(r.c.name)}</b>, you're in for <b>${esc(r.e.title)}</b><br>${fd(r.e.date)} · ${esc(r.e.time)}<br><small>Confirmation ${r.r.id} · ${esc(r.c.email)}</small></div><p class="mut">${r.isNew ? "New CRM customer created." : "Existing CRM customer reused."} Dashboard and activity updated. (Confirmation email is simulated.)</p><div class="row"><button class="btn" data-a="close">Done</button></div>`;
+          toast("Registered " + r.c.name);
+        } else if (f.dataset.f == "ev") {
+          const cap = parseInt(d.cap, 10);
+          if (!d.title.trim()) return showErr(f, "Title is required.");
+          if (!d.date) return showErr(f, "Date is required.");
+          if (!d.time) return showErr(f, "Time is required.");
+          if (!(cap >= 1))
+            return showErr(f, "Capacity must be a whole number of at least 1.");
+          if (id) {
+            const e = evOf(id);
+            if (cap < nReg(id))
+              return showErr(
+                f,
+                "Capacity cannot be below current registrations (" +
+                  nReg(id) +
+                  ").",
+              );
+            Object.assign(e, {
+              title: d.title.trim(),
+              desc: d.desc.trim(),
+              date: d.date,
+              time: d.time,
+              cap,
+            });
+            log("Event", "Event updated: " + e.title, "Success");
+          } else {
+            S.events.push({
+              id: "e" + ++S.n,
+              title: d.title.trim(),
+              desc: d.desc.trim(),
+              date: d.date,
+              time: d.time,
+              cap,
+              page: { head: "", sub: "", cta: "Reserve my seat" },
+            });
+            log("Event", "Event created: " + d.title.trim(), "Success");
+          }
+          close();
+          render();
+          toast("Event saved.");
+        } else if (f.dataset.f == "camp") {
+          if (!d.name.trim() || !d.subject.trim() || !d.body.trim())
+            return showErr(f, "Name, subject and message are all required.");
+          if (id) {
+            const c = S.camps.find((x) => x.id == id);
+            Object.assign(c, {
+              name: d.name.trim(),
+              eid: d.eid,
+              subject: d.subject,
+              body: d.body,
+            });
+            if (c.status != "Draft") {
+              c.status = "Draft";
+              log(
+                "Campaign",
+                "Edited after approval step → returned to Draft: " + c.name,
+                "Pending",
+              );
+            } else
+              log("Campaign", "Campaign draft updated: " + c.name, "Success");
+          } else {
+            S.camps.push({
+              id: "m" + ++S.n,
+              name: d.name.trim(),
+              eid: d.eid,
+              subject: d.subject,
+              body: d.body,
+              status: "Draft",
+            });
+            log(
+              "Campaign",
+              "Campaign draft created: " + d.name.trim(),
+              "Success",
+            );
+          }
+          close();
+          render();
+          toast("Campaign draft saved.");
+        }
+      });
+      document.addEventListener("input", (e) => {
+        if (e.target.id == "q") {
+          q = e.target.value;
+          crmRows();
+        } else if (e.target.closest("form[data-f=camp]")) updPv();
+        else if (["p1", "p2", "p3"].includes(e.target.id)) {
+          const x = evOf(selEv);
+          $("#v1").textContent = $("#p1").value || x.title;
+          $("#v2").textContent = $("#p2").value || x.desc;
+          $("#v3").textContent = $("#p3").value || "Register";
+        }
+      });
+      document.addEventListener("change", (e) => {
+        if (e.target.dataset.sel !== undefined) {
+          selEv = e.target.value;
+          render();
+        } else if (e.target.closest("form[data-f=camp]")) updPv();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key == "Enter" && e.target.id == "cmd") runAI(e.target.value);
+        if (e.key == "Escape") close();
+      });
+      S = seed();
+      render();
+    </script>
+  </body>
+</html>
+>>>>>>> origin/prachi

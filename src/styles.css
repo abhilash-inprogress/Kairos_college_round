@@ -54,8 +54,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .sidebar-footer { margin-top: auto; }
 .workspace-status { display: flex; align-items: center; gap: 8px; padding: 10px 8px 13px; color: #8595ae; font-size: 10px; }
 .status-dot, .environment-badge i, .live-indicator::before { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px #59d5a266; }
-.reset-button { width: 100%; border: 1px solid #27344a; border-radius: 8px; padding: 8px 10px; background: transparent; color: #95a4bb; text-align: left; font-size: 11px; cursor: pointer; }
-.reset-button:hover { background: #ffffff08; color: var(--text); }
 .profile { display: flex; align-items: center; gap: 10px; padding: 17px 5px 2px; margin-top: 14px; border-top: 1px solid #1e2b40; }
 .profile-avatar, .top-avatar { display: grid; place-items: center; border-radius: 50%; background: linear-gradient(145deg, #a78bfa, #397be1); color: white; font-weight: 700; }
 .profile-avatar { width: 31px; height: 31px; font-size: 12px; }
@@ -310,7 +308,6 @@ label input, label select, label textarea { display: block; margin-top: 7px; fon
 .nav-item:hover { color: #fff2ef; background: #ffb99c0d; }
 .nav-item.active { color: #ffc6ac; background: linear-gradient(100deg, #482939, #302033); border-color: #714052; }
 .nav-item.active > i { background: var(--blue); box-shadow: 0 0 12px #ff8b7088; }
-.reset-button { border-color: #433347; color: #b5a5b7; }
 .profile { border-color: #332735; }
 .profile-avatar, .top-avatar { background: linear-gradient(145deg, #f28b75, #b7578f); }
 .topbar { border-color: #302634; background: #151019df; }
@@ -659,3 +656,34 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
     .auth-brand { margin-bottom: 37px; }
     .auth-aside { display: none; }
   }
+
+.workflow-proposal > .eyebrow { color: #9ac1f5; }
+.workflow-proposal h2, .workflow-proposal p { margin-bottom: 0; }
+.workflow-proposal p { color: #aab9cf; font-size: 11px; line-height: 1.65; }
+.workflow-proposal-grid { display: grid; gap: 10px; }
+.workflow-proposal-grid > div { display: grid; gap: 4px; border-top: 1px solid #354968; padding-top: 9px; }
+.workflow-proposal-grid b { color: #e2eafa; font-size: 11px; }
+.workflow-proposal-grid span, .workflow-proposal-grid small, .workflow-proposal details { color: #aab9cf; font-size: 10px; line-height: 1.6; }
+.workflow-proposal details summary { color: #c5d5ed; cursor: pointer; }
+.workflow-proposal details p { white-space: pre-wrap; }
+.publish-toggle { display: flex; grid-template-columns: auto 1fr; align-items: center; gap: 9px; }
+.publish-toggle input { width: 16px; min-height: 16px; margin: 0; }
+.public-page-link { display: block; margin-top: 12px; color: #b9d1ff; font-size: 11px; overflow-wrap: anywhere; }
+.public-event-shell { display: grid; min-height: 100vh; place-items: center; padding: 28px 16px; background: radial-gradient(ellipse at 50% 0, #244b7580, transparent 45rem), #0b1321; }
+.public-event-card { width: min(100%, 610px); padding: clamp(25px, 6vw, 52px); border: 1px solid #354968; border-radius: 22px; background: linear-gradient(145deg, #17243a, #101a2c); box-shadow: 0 26px 80px #0008; }
+.public-event-card h1 { margin-top: 15px; font-size: clamp(32px, 7vw, 52px); }
+.public-event-description { color: #aab9cf; font-size: 15px; line-height: 1.7; }
+.public-event-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 12px; }
+.public-event-meta span, .public-event-capacity { color: #b9d1ff; font-size: 12px; }
+.public-event-capacity { margin-bottom: 20px; }
+.public-event-form { display: grid; gap: 14px; }
+.public-event-form label { display: grid; gap: 7px; color: #c4d0e0; font-size: 11px; }
+.public-event-form input { width: 100%; min-height: 42px; border: 1px solid #354968; border-radius: 8px; padding: 10px; background: #0b1525; color: #f3eaf0; }
+.public-event-form .btn { margin-top: 4px; }
+.public-event-brand { display: block; margin-top: 25px; color: #8292aa; font-size: 10px; }
+.billing-error { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.billing-error .text-button { flex: none; color: inherit; }
+@media (max-width: 540px) {
+  .public-event-meta { flex-direction: column; }
+  .billing-error { flex-direction: column; }
+}

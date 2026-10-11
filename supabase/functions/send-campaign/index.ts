@@ -55,6 +55,8 @@ Deno.serve(async (request) => {
   let deliveryClaim: { userId: string; campaignId: string; attemptId: string; outcomeUnknown: boolean } | null = null;
   let claimedCampaignData: Record<string, unknown> | null = null;
   let sent = 0;
+  let totalRecipients = 0;
+  let stage = "validating the campaign";
   try {
     const accessToken = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
     if (!accessToken) return jsonResponse(401, { error: "Sign in before sending a campaign." });
@@ -72,6 +74,7 @@ Deno.serve(async (request) => {
       auth: { persistSession: false, autoRefreshToken: false },
     });
     recoveryClient = admin;
+    stage = "loading the campaign";
     const { data: campaignRow, error: campaignError } = await admin
       .from("workspace_records")
       .select("data")
@@ -85,6 +88,7 @@ Deno.serve(async (request) => {
     const campaign = campaignRow.data;
     if (campaign.status !== "Ready") return jsonResponse(409, { error: "Approve this campaign before sending it. Campaigns can only be sent once they are Ready." });
 
+    stage = "loading the linked event";
     const { data: eventRow, error: eventError } = await admin
       .from("workspace_records")
       .select("data")
@@ -95,6 +99,7 @@ Deno.serve(async (request) => {
     if (eventError) throw eventError;
     if (!eventRow) return jsonResponse(400, { error: "The campaign's linked event could not be found." });
 
+    stage = "loading event registrations";
     const { data: registrations, error: registrationError } = await admin
       .from("workspace_records")
       .select("data")
@@ -113,6 +118,7 @@ Deno.serve(async (request) => {
     const customerIds = [...new Set(eventRegistrations.map((registration) => registration.customerId).filter(Boolean))];
     if (!customerIds.length) return jsonResponse(400, { error: "There are no non-demo attendees registered for this event yet." });
 
+    stage = "loading attendee contacts";
     const { data: customerRows, error: customerError } = await admin
       .from("workspace_records")
       .select("data")
@@ -136,7 +142,9 @@ Deno.serve(async (request) => {
     if (recipients.some((customer) => !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email))) {
       return jsonResponse(400, { error: "At least one attendee has an invalid email address. Correct the contact record before sending." });
     }
+    totalRecipients = recipients.length;
 
+    stage = "claiming the campaign for delivery";
     const attemptId = crypto.randomUUID();
     const sendingCampaign = { ...campaign, status: "Sending", sendAttemptId: attemptId };
     const { data: claimedRows, error: claimError } = await admin
@@ -162,6 +170,7 @@ Deno.serve(async (request) => {
         html: renderHtml(String(campaign.body || ""), customer.name || "there", eventRow.data.title),
       }));
       try {
+        stage = `sending batch ${Math.floor(offset / 100) + 1} through Resend`;
         const response = await fetch("https://api.resend.com/emails/batch", {
           method: "POST",
           headers: {
@@ -177,7 +186,12 @@ Deno.serve(async (request) => {
           if (response.status >= 500) deliveryClaim.outcomeUnknown = true;
           break;
         }
-        const accepted = Array.isArray(result.data) ? result.data.length : batch.length;
+        if (!Array.isArray(result.data)) {
+          lastProviderError = "Resend returned an unexpected response. Check Resend logs before retrying.";
+          deliveryClaim.outcomeUnknown = true;
+          break;
+        }
+        const accepted = result.data.length;
         sent += Math.min(accepted, batch.length);
         if (accepted < batch.length) {
           lastProviderError = "Resend accepted fewer emails than requested.";
@@ -203,14 +217,17 @@ Deno.serve(async (request) => {
       status,
       deliverySummary: { sent, failed, completedAt, error: lastProviderError || undefined },
     };
-    const { error: updateError } = await admin
+    stage = "saving the delivery result";
+    const { data: updatedRows, error: updateError } = await admin
       .from("workspace_records")
       .update({ data: finalCampaign, updated_at: completedAt })
       .eq("user_id", user.id)
       .eq("record_type", "campaign")
       .eq("record_key", campaignId)
-      .eq("data->>sendAttemptId", attemptId);
+      .eq("data->>sendAttemptId", attemptId)
+      .select("record_key");
     if (updateError) throw updateError;
+    if (!updatedRows?.length) throw new Error("The campaign delivery claim changed before its final status could be saved.");
 
     const activityId = crypto.randomUUID();
     const activity = {
@@ -233,7 +250,16 @@ Deno.serve(async (request) => {
         data: activity,
         updated_at: completedAt,
       });
-    if (activityError) throw activityError;
+    if (activityError) {
+      console.error("Campaign delivery succeeded but its activity record could not be saved:", activityError.message);
+      return jsonResponse(200, {
+        status,
+        sent,
+        failed,
+        error: lastProviderError || undefined,
+        warning: "Delivery status was saved, but the activity log could not be updated. Check Supabase logs.",
+      });
+    }
 
     return jsonResponse(200, {
       status,
@@ -242,9 +268,12 @@ Deno.serve(async (request) => {
       error: lastProviderError || undefined,
     });
   } catch (error) {
-    console.error("send-campaign failed:", error instanceof Error ? error.message : "Unknown error");
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`send-campaign failed while ${stage}:`, errorMessage);
     if (deliveryClaim && recoveryClient) {
-      const status = sent > 0 || deliveryClaim.outcomeUnknown ? "Delivery needs review" : "Ready";
+      const status = totalRecipients > 0 && sent === totalRecipients
+        ? "Sent"
+        : sent > 0 || deliveryClaim.outcomeUnknown ? "Delivery needs review" : "Ready";
       const completedAt = new Date().toISOString();
       const { error: recoveryError } = await recoveryClient
         .from("workspace_records")
@@ -262,6 +291,11 @@ Deno.serve(async (request) => {
         .eq("data->>sendAttemptId", deliveryClaim.attemptId);
       if (recoveryError) console.error("Could not recover campaign status:", recoveryError.message);
     }
-    return jsonResponse(500, { error: "Campaign delivery failed unexpectedly. Check the Supabase Edge Function logs before retrying." });
+    return jsonResponse(500, {
+      error: `Campaign delivery failed while ${stage}. ${errorMessage}.`,
+      ...(deliveryClaim && (sent > 0 || deliveryClaim.outcomeUnknown)
+        ? { warning: "Some messages may have been accepted. Check the campaign status and Resend logs before retrying." }
+        : {}),
+    });
   }
 });
