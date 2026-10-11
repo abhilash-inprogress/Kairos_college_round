@@ -115,12 +115,53 @@ const PageHeader = ({ title, description, action }) => (
 );
 const Empty = ({ children }) => <div className="empty-state">{children}</div>;
 
+function WorkflowRoutingMap() {
+  return (
+    <svg className="workflow-map" viewBox="0 0 760 250" role="img" aria-labelledby="workflow-map-title workflow-map-description">
+      <title id="workflow-map-title">NEXUS workflow routing map</title>
+      <desc id="workflow-map-description">Illustrative demo flow from event intake through registration, duplicate checks, CRM synchronization, and an approval checkpoint.</desc>
+      <defs>
+        <linearGradient id="routePrimary" x1="0" x2="1"><stop stopColor="#9967f5" stopOpacity=".32"/><stop offset=".55" stopColor="#8c68f5"/><stop offset="1" stopColor="#4c8dff"/></linearGradient>
+        <linearGradient id="routeSecondary" x1="0" x2="1"><stop stopColor="#4c8dff" stopOpacity=".25"/><stop offset=".55" stopColor="#438cff"/><stop offset="1" stopColor="#34d5ba"/></linearGradient>
+        <filter id="routeGlow" x="-30%" y="-50%" width="160%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      {[0,1,2,3,4,5,6,7,8,9].map((n) => <line key={n} className="route-grid" x1={28+n*78} x2={28+n*78} y1="42" y2="218" />)}
+      <path className="route-path route-primary" d="M48 83 C115 83 145 72 205 82 S292 99 355 84 S452 73 515 88 S615 96 690 88" />
+      <path className="route-path route-secondary" d="M48 122 C120 122 145 151 205 140 S292 119 355 135 S452 149 515 127 S617 106 690 88" />
+      <path className="route-path route-fallback" d="M48 178 C120 178 145 165 205 175 S292 184 355 166 S452 149 515 159 S610 153 655 190" />
+      <path className="route-path route-branch" d="M48 102 C120 102 145 136 205 134 S292 114 355 125 S452 124 515 116 S614 102 690 88" />
+      {[["Intake",48],["Register",205],["Validate",355],["CRM sync",515]].map(([label,x]) => (
+        <g key={label}>
+          <text className="route-stage" x={x} y="24" textAnchor="middle">{label}</text>
+          <rect className="route-rail" x={x-5} y="48" width="10" height="154" rx="5" />
+          <rect className="route-rail-glow" x={x-2} y="63" width="4" height="124" rx="2" />
+          <circle className="route-node violet" cx={x} cy="83" r="7" />
+          <circle className="route-node blue" cx={x} cy="137" r="6" />
+          <circle className="route-node teal" cx={x} cy="176" r="5" />
+        </g>
+      ))}
+      <text className="route-stage" x="690" y="24" textAnchor="middle">Outcome</text>
+      <circle className="route-outcome" cx="690" cy="88" r="22" />
+      <path className="route-check" d="m682 88 5 5 11-12" />
+      <text className="route-caption" x="690" y="126" textAnchor="middle">Complete</text>
+      <circle className="route-fallback-node" cx="655" cy="190" r="8" />
+      <text className="route-small" x="655" y="216" textAnchor="middle">Review gate</text>
+      <text className="route-small" x="48" y="235" textAnchor="middle">New event</text>
+      <text className="route-small" x="205" y="235" textAnchor="middle">Registration</text>
+      <text className="route-small" x="355" y="235" textAnchor="middle">Duplicate check</text>
+      <text className="route-small" x="515" y="235" textAnchor="middle">Customer record</text>
+    </svg>
+  );
+}
+
 export default function App({ user, onSignOut }) {
   const [state, setState] = useState(initialState);
   const stateRef = useRef(state);
   const [view, setView] = useState("overview");
   const [mobileMenu, setMobileMenu] = useState(false);
   const [search, setSearch] = useState("");
+  const [sectionSearch, setSectionSearch] = useState("");
+  const [theme, setTheme] = useState(() => window.localStorage.getItem("nexus-theme") === "light" ? "light" : "dark");
   const [selectedEvent, setSelectedEvent] = useState("e1");
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState("");
@@ -135,6 +176,10 @@ export default function App({ user, onSignOut }) {
   const [reloadToken, setReloadToken] = useState(0);
   const mutationQueue = useRef(Promise.resolve());
   const chatRef = useRef([]);
+
+  useEffect(() => {
+    window.localStorage.setItem("nexus-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     let active = true;
@@ -164,6 +209,9 @@ export default function App({ user, onSignOut }) {
   const eventById = (id) => state.events.find((event) => event.id === id);
   const registrationsFor = (id) => state.registrations.filter((registration) => registration.eventId === id);
   const upcoming = [...state.events].filter((event) => event.date >= dateIn(0)).sort((a, b) => a.date.localeCompare(b.date));
+  const sectionMatches = sectionSearch.trim()
+    ? navItems.filter(([, label]) => label.toLowerCase().includes(sectionSearch.trim().toLowerCase()))
+    : [];
 
   function notify(message) {
     setToast(message);
@@ -513,32 +561,45 @@ export default function App({ user, onSignOut }) {
     });
     const max = Math.max(3, ...lastWeek.map((day) => day.count));
     const countLog = (type, status) => state.activity.filter((item) => item.type === type && (!status || item.status === status)).length;
+    const approvalQueue = state.campaigns.filter((campaign) => ["Pending approval", "Ready"].includes(campaign.status));
     const kpis = [
-      ["Total customers", state.customers.length, `${state.customers.filter((customer) => customer.status === "Lead").length} leads`, "violet"],
-      ["Upcoming webinars", upcoming.length, `Next: ${upcoming[0] ? formatDate(upcoming[0].date) : "—"}`, "cyan"],
-      ["Total registrations", state.registrations.length, `Across ${state.events.length} events`, "amber"],
-      ["Active campaigns", state.campaigns.filter((campaign) => !campaign.status.startsWith("Sent")).length, `${state.campaigns.filter((campaign) => campaign.status === "Ready").length} ready`, "rose"],
+      ["Total customers", state.customers.length, `${state.customers.filter((customer) => customer.status === "Lead").length} leads`, "violet", "M16 8a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM4 21c0-4 4-6 8-6s8 2 8 6"],
+      ["Upcoming webinars", upcoming.length, `Next: ${upcoming[0] ? formatDate(upcoming[0].date) : "—"}`, "cyan", "M3 5h18v16H3zM3 10h18M8 3v4M16 3v4"],
+      ["Total registrations", state.registrations.length, `Across ${state.events.length} events`, "amber", "M4 18V6m0 12h16M8 14l3-4 3 2 5-6"],
+      ["Active campaigns", state.campaigns.filter((campaign) => !campaign.status.startsWith("Sent" )).length, `${state.campaigns.filter((campaign) => campaign.status === "Ready").length} ready`, "rose", "M3 11v3l14 6V5L3 11zM17 9h3v6h-3"],
     ];
     const workflows = [
       ["Registration → CRM sync", `${countLog("CRM", "Success")} synced`, "Success"],
       ["Campaigns awaiting approval", `${state.campaigns.filter((campaign) => campaign.status === "Pending approval").length} pending`, "Pending"],
       ["AI command runs", `${countLog("AI")} runs`, "Simulated"],
-      ["Errors / blocked actions", `${countLog("Error") + countLog("Registration", "Error")} logged`, "Success"],
+      ["Errors / blocked actions", `${countLog("Error") + countLog("Registration", "Error")} logged`, countLog("Error") + countLog("Registration", "Error") ? "Error" : "Success"],
     ];
     return <>
-      <PageHeader title="Overview" description="Your workspace at a glance · Kairos Demo Workspace" />
-      <div className="grid kpi-grid">{kpis.map(([label, value, helper, color]) => <div className={`card kpi ${color}`} key={label}><span>{label}</span><b>{value}</b><small>{helper}</small><i className="kpi-orb" /></div>)}</div>
-      <div className="grid two-column top-gap">
-        <section className="card"><div className="section-heading"><div><span className="eyebrow">PERFORMANCE</span><h2>Registration trend</h2></div><span className="subtle">Last 7 days</span></div>
-          <div className="chart">{lastWeek.map((day, index) => <div className="chart-col" key={day.label}><div className="chart-value">{day.count || ""}</div><div className="chart-bar" style={{ height: `${Math.max(7, (day.count / max) * 126)}px` }} /><small>{day.label}</small></div>)}</div>
+      <PageHeader title="AI Workflow Command Center" description="Monitor routing, registrations, approvals, and workspace activity in one place." action={<button className="btn overview-action" onClick={() => openEventForm()}>＋ New event</button>} />
+      <div className="grid kpi-grid">{kpis.map(([label, value, helper, color, path]) => <div className={`card kpi ${color}`} key={label}><span className="kpi-icon"><svg className="icon" viewBox="0 0 24 24" aria-hidden="true"><path d={path} /></svg></span><span className="kpi-copy"><small>{label}</small><b>{value}</b><small>{helper}</small></span><i className="kpi-orb" /></div>)}</div>
+      <div className="grid dashboard-primary top-gap">
+        <section className="card route-card"><div className="section-heading"><div><span className="eyebrow">WORKSPACE AUTOMATION</span><h2>Workflow routing map</h2></div><span className="live-indicator">Demo flow</span></div>
+          <WorkflowRoutingMap />
+          <div className="route-legend"><span><i className="legend-violet" />Registration path</span><span><i className="legend-blue" />CRM sync</span><span><i className="legend-teal" />Approval checkpoint</span><small>Illustrative routing · actions use workspace data</small></div>
         </section>
-        <section className="card"><div className="section-heading"><div><span className="eyebrow">AUTOMATIONS</span><h2>Workflow status</h2></div><span className="live-indicator">Live</span></div>
+        <section className="card approval-queue"><div className="section-heading"><div><span className="eyebrow">HUMAN REVIEW</span><h2>Campaign approval queue</h2></div><span className="queue-count">{approvalQueue.length} open</span></div>
+          {approvalQueue.length ? approvalQueue.slice(0, 4).map((campaign) => <div className="approval-row" key={campaign.id}><span className="approval-mark">✦</span><span className="approval-copy"><b>{campaign.name}</b><small>{eventById(campaign.eventId)?.title || "Campaign review"}</small></span><Pill>{campaign.status}</Pill>{campaign.status === "Pending approval" ? <button className="queue-action" onClick={() => setCampaignStatus(campaign, "Ready")}>Approve</button> : <button className="queue-action secondary" onClick={() => navigate("marketing")}>Review</button>}</div>) : <Empty>No campaigns are awaiting review.</Empty>}
+          <button className="text-button queue-link" onClick={() => navigate("marketing")}>Open Marketing <span>↗</span></button>
+          <div className="queue-footnote"><span className="status-dot" /> Approval stays manual; email delivery requires a separate confirmation.</div>
+        </section>
+      </div>
+      <div className="grid two-column top-gap">
+        <section className="card"><div className="section-heading"><div><span className="eyebrow">PERFORMANCE</span><h2>Registration trend</h2></div><span className="subtle">Last 7 days · workspace records</span></div>
+          <div className="chart">{lastWeek.map((day) => <div className="chart-col" key={day.label}><div className="chart-value">{day.count || ""}</div><div className="chart-bar" style={{ height: `${Math.max(7, (day.count / max) * 126)}px` }} /><small>{day.label}</small></div>)}</div>
+        </section>
+        <section className="card"><div className="section-heading"><div><span className="eyebrow">WORKFLOW HEALTH</span><h2>Workspace status</h2></div><span className="live-indicator">Session</span></div>
           {workflows.map(([label, detail, status]) => <div className="list-row" key={label}><span><b>{label}</b><small>{detail}</small></span><Pill>{status}</Pill></div>)}
         </section>
       </div>
       <div className="grid two-column top-gap">
         <section className="card"><div className="section-heading"><div><span className="eyebrow">WORKSPACE FEED</span><h2>Recent activity</h2></div><button className="text-button" onClick={() => navigate("log")}>View all <span>↗</span></button></div>
           {state.activity.slice(0, 5).map((item, index) => <div className="list-row" key={`${item.createdAt}-${index}`}><span><b>{item.message}</b><small>{item.type} · {timeAgo(item.createdAt)}</small></span><Pill>{item.status}</Pill></div>)}
+          {!state.activity.length && <Empty>No recent activity.</Empty>}
         </section>
         <section className="card"><div className="section-heading"><div><span className="eyebrow">COMING UP</span><h2>Upcoming events</h2></div><button className="text-button" onClick={() => navigate("events")}>Manage <span>↗</span></button></div>
           {upcoming.length ? upcoming.slice(0, 3).map((event) => <div className="event-progress" key={event.id}><div className="list-row compact"><span><b>{event.title}</b><small>{formatDate(event.date)}</small></span><small>{registrationsFor(event.id).length} / {event.capacity}</small></div><div className="progress"><i style={{ width: `${Math.min(100, registrationsFor(event.id).length / event.capacity * 100)}%` }} /></div></div>) : <Empty>No upcoming events.</Empty>}
@@ -660,10 +721,10 @@ export default function App({ user, onSignOut }) {
     </section></main>;
   }
 
-  return <div className="app-shell">
+  return <div className="app-shell" data-theme={theme}>
     {mobileMenu && <button className="scrim" aria-label="Close navigation" onClick={() => setMobileMenu(false)} />}
     <aside className={`sidebar ${mobileMenu ? "open" : ""}`}><a className="brand" href="#overview" onClick={(event) => { event.preventDefault(); navigate("overview"); }}><span className="brand-mark">N</span><span><b>NEXUS</b><small>AI BUSINESS PLATFORM</small></span></a><div className="workspace-chip"><span className="workspace-icon">⌘</span><span><small>WORKSPACE</small><b>Kairos Demo Workspace</b></span><span className="chevron">⌄</span></div><div className="nav-label">WORKSPACE</div><nav>{navItems.map(([id, label, path]) => <button key={id} className={`nav-item ${view === id ? "active" : ""}`} onClick={() => navigate(id)}>{icon(path)}<span>{label}</span>{view === id && <i />}</button>)}</nav><div className="sidebar-footer"><div className="workspace-status"><span className="status-dot" /><span>All systems operational</span></div><button className="reset-button" onClick={resetDemo}>↺ Reset demo data</button><div className="profile"><span className="profile-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span><span><b>{user.user_metadata?.full_name || user.email?.split("@")[0] || "Account"}</b><small>{user.email}</small></span><button className="signout-button" title="Log out of your account" onClick={signOut}>Log out</button></div></div></aside>
-    <main className="main-content"><header className="topbar"><button className="menu-toggle" aria-label="Toggle menu" onClick={() => setMobileMenu(!mobileMenu)}>☰</button><div className="breadcrumb"><span>Workspace</span><b>/</b><strong>{navItems.find(([id]) => id === view)?.[1]}</strong></div><div className="topbar-right"><span className="environment-badge"><i /> Secure account</span><span className="top-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span></div></header><div className={`page-content view-${view}`}>{pages[view]()}</div><footer className="app-footer"><span>NEXUS <i>·</i> AI Business Operating Platform</span><span>Workspace data · Supabase · Resend email · Simulated payments and AI</span></footer></main>
+    <main className="main-content"><header className="topbar"><button className="menu-toggle" aria-label="Toggle menu" onClick={() => setMobileMenu(!mobileMenu)}>☰</button><div className="breadcrumb"><span>Workspace</span><b>/</b><strong>{navItems.find(([id]) => id === view)?.[1]}</strong></div><div className="global-search"><svg className="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input aria-label="Search workspace sections" placeholder="Search sections…" value={sectionSearch} onChange={(event) => setSectionSearch(event.target.value)} onKeyDown={(event) => { if (event.key === "Escape") setSectionSearch(""); if (event.key === "Enter" && sectionMatches[0]) { navigate(sectionMatches[0][0]); setSectionSearch(""); } }} />{sectionSearch.trim() && <div className="search-results" role="listbox">{sectionMatches.length ? sectionMatches.map(([id, label, path]) => <button role="option" aria-selected="false" key={id} onClick={() => { navigate(id); setSectionSearch(""); }}>{icon(path)}<span>{label}</span><small>↵</small></button>) : <div className="search-empty">No matching sections</div>}</div>}</div><div className="topbar-right"><button className="toolbar-icon" aria-label="Open workflow activity" title="Workflow activity" onClick={() => navigate("log")}><svg className="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><button className="btn topbar-create" onClick={() => openEventForm()}>＋ New event</button><span className="environment-badge"><i /> Secure account</span><span className="top-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span><button className="theme-toggle" aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`} aria-pressed={theme === "light"} onClick={() => setTheme((current) => current === "dark" ? "light" : "dark")}>{theme === "dark" ? "☼" : "☾"}<span>{theme === "dark" ? "Light" : "Dark"}</span></button></div></header><div className={`page-content view-${view}`}>{pages[view]()}</div><footer className="app-footer"><span>NEXUS <i>·</i> AI Business Operating Platform</span><span>Workspace data · Supabase · Resend email · Simulated payments and AI</span></footer></main>
     {modal && <div className="overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setModal(null); }}>{modalContent()}</div>}
     {toast && <div className="toast-message"><span>✓</span>{toast}</div>}
   </div>;
