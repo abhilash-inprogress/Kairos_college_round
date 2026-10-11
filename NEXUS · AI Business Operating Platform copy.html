@@ -1,41 +1,3 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NEXUS · AI Business Operating Platform</title>
-<style>
-:root{box-sizing:border-box;color-scheme:dark;--bg:#080d19;--side:#080d19;--top:#0a1120;--card:#11192b;--card-hi:#151f34;--bd:#26314b;--hv:#1a2740;--tx:#edf2ff;--mut:#8998b3;--blue:#527fff;--vio:#8a63f5;--teal:#32d6b0;--warn:#f2b85b;--err:#fa7187;--input:#0b1322;--surface:#0d1525;--f:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--shadow:0 18px 45px #02050d66;--glow:#7755f522;--line:#26314b;--chart-grid:#25304a;--route-violet:#9b6cff;--route-blue:#4d8dff;--route-teal:#37d5bd}
-html{scroll-padding-top:80px}*,*:before,*:after{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 55% -22%,#202d53 0,transparent 43%),var(--bg);color:var(--tx);font:13px/1.5 var(--f);letter-spacing:.005em}button,input,select,textarea{font:inherit}button{color:inherit}
-#side{position:fixed;inset:0 auto 0 0;width:236px;padding:19px 12px 16px;background:linear-gradient(180deg,#0a1120f5,var(--side));border-right:1px solid #ffffff0d;display:flex;flex-direction:column;gap:5px;z-index:30;transition:transform .22s ease;backdrop-filter:blur(18px)}.brand{display:flex;align-items:center;gap:11px;padding:4px 8px 18px}.brand:before{content:'N';display:grid;place-items:center;flex:none;width:37px;height:37px;border-radius:12px;background:linear-gradient(145deg,#9785ff,#536fff 66%,#38c8d2);color:white;font-size:18px;font-weight:800;box-shadow:0 7px 22px #6578ff44}.brand b{font-size:15px;letter-spacing:.17em}.brand small{display:block;color:var(--mut);font-size:10px;margin-top:1px}.ws{margin:0 3px 12px;padding:10px 11px;border:1px solid #ffffff11;background:#ffffff05;border-radius:10px;color:var(--mut);font-size:10px}.ws span{display:block;text-transform:uppercase;letter-spacing:.11em;font-size:8px}.ws b{display:block;color:var(--tx);font-size:11px;font-weight:600;margin-top:3px}.nav{width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;border-radius:9px;color:var(--mut);background:transparent;text-align:left;cursor:pointer;transition:background .16s,color .16s,transform .16s}.nav:hover{background:var(--hv);color:var(--tx)}.nav.on{color:white;background:linear-gradient(100deg,#5b78fa30,#7862ed0c);box-shadow:inset 2px 0 #8b9eff}.nav svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}.side-foot{display:grid;gap:11px}.side-status{padding:11px;border:1px solid #ffffff10;border-radius:11px;background:#ffffff04}.side-status .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 11px #32d6b088;margin-right:6px}.side-status b{font-size:10px}.side-status small{display:block;color:var(--mut);font-size:9px;margin-top:5px}
-main{margin-left:236px;min-width:0;padding:0 24px 38px;max-width:none}#top{height:65px;position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:15px;margin:0 -24px 21px;padding:0 24px;background:#080f1ddd;border-bottom:1px solid #ffffff0d;backdrop-filter:blur(18px)}#top .menu-toggle,#top .top-brand{display:none}.workspace-head{display:flex;flex-direction:column;min-width:150px}.workspace-head small{font-size:8px;color:var(--mut);letter-spacing:.12em;text-transform:uppercase}.workspace-head b{font-size:11px;margin-top:2px}.global-search{position:relative;flex:1;max-width:440px;margin:0 auto}.global-search:before{content:'⌕';position:absolute;z-index:1;left:12px;top:4px;color:var(--mut);font-size:21px}.global-search input{height:36px;padding:0 12px 0 34px;background:#ffffff06;border:1px solid #ffffff12;border-radius:9px;color:var(--tx);font-size:10px}.top-actions{display:flex;align-items:center;gap:8px}.icon-btn{width:34px;height:34px;display:grid;place-items:center;background:transparent;border:1px solid transparent;border-radius:9px;color:var(--mut);cursor:pointer}.icon-btn:hover{background:#ffffff0a;color:var(--tx)}.profile-chip{display:flex;align-items:center;gap:8px;padding:4px 8px;border-left:1px solid #ffffff12}.avatar{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:linear-gradient(145deg,#b392ff,#476eea);color:#fff;font-size:9px;font-weight:700}.profile-copy{line-height:1.2}.profile-copy b{display:block;font-size:9px}.profile-copy small{color:var(--mut);font-size:8px}.header-action{padding:7px 11px!important;font-size:10px!important}
-#searchResults{position:absolute;top:42px;left:0;right:0;display:none;padding:5px;background:var(--card-hi);border:1px solid var(--bd);border-radius:10px;box-shadow:var(--shadow)}#searchResults.on{display:block}#searchResults button{display:flex;align-items:center;gap:8px;width:100%;padding:8px;border:0;border-radius:7px;background:transparent;text-align:left;cursor:pointer;font-size:11px}#searchResults button:hover{background:var(--hv)}#searchResults svg{width:15px;height:15px}
-#app{max-width:1520px;margin:0 auto}.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:17px}.page-head h1{font-size:21px;line-height:1.2;letter-spacing:-.035em;margin:0 0 4px}.page-head p,.sub{color:var(--mut);font-size:11px;margin:0}.eyebrow{color:#a6b3cb;font-size:8px;font-weight:650;letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}.grid{display:grid;gap:13px}.g2{grid-template-columns:minmax(0,2fr) minmax(250px,1fr)}.g3{grid-template-columns:repeat(3,minmax(0,1fr))}.g4{grid-template-columns:repeat(4,minmax(0,1fr))}.g2{grid-template-columns:2fr 1fr}.card{min-width:0;padding:15px;background:linear-gradient(150deg,var(--card-hi),var(--card));border:1px solid #ffffff0e;border-radius:12px;box-shadow:0 7px 22px #0002}.card.h{transition:border-color .16s,transform .16s,box-shadow .16s}.card.h:hover{border-color:#758fff55;transform:translateY(-1px);box-shadow:0 12px 30px #0003}.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.card-head h2,.card h2{font-size:11px;font-weight:650;letter-spacing:.01em;margin:0}.card-head small{color:var(--mut);font-size:9px}.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}.mut{color:var(--mut)}
-.kpi{position:relative;display:flex;align-items:center;gap:11px;min-height:81px;padding:13px;overflow:hidden}.kpi:after{content:'';position:absolute;right:-31px;top:-38px;width:85px;height:85px;border-radius:50%;background:var(--kglow,#5b79ff14);filter:blur(2px)}.kpi-icon{position:relative;z-index:1;display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;color:var(--kcolor,var(--blue));background:var(--kbg,#527fff1a);border:1px solid color-mix(in srgb,var(--kcolor,var(--blue)) 20%,transparent)}.kpi-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.kpi-copy{position:relative;z-index:1;min-width:0}.kpi small{display:block;color:var(--mut);font-size:9px}.kpi b{display:block;font-size:21px;line-height:1.1;letter-spacing:-.035em;margin:4px 0}.kpi .trend{color:var(--teal);font-size:8px}.kpi .trend.neutral{color:var(--mut)}
-.btn{border:1px solid transparent;border-radius:8px;padding:8px 12px;color:#fff;background:linear-gradient(110deg,#557fff,#7656e9);box-shadow:0 4px 14px #5a70ed2c;font-weight:600;font-size:11px;cursor:pointer;transition:filter .15s,transform .15s,box-shadow .15s}.btn:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 7px 18px #5a70ed44}.btn.s{color:var(--tx);background:#ffffff05;border-color:#ffffff14;box-shadow:none}.btn.s:hover{background:#ffffff0b}.btn.v{background:linear-gradient(110deg,#9a69f5,#6848e6)}.btn.sm{padding:5px 9px;font-size:9px}.btn:disabled{opacity:.5;cursor:not-allowed}.btn:focus-visible,.nav:focus-visible,.icon-btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #8fa6ff;outline-offset:2px}
-.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 7px;border-radius:99px;font-size:8px;font-weight:650;white-space:nowrap;border:1px solid currentColor;background:#ffffff06}.Success,.Active,.Customer,.Ready,.Approved{color:var(--teal);border-color:#32d6b044;background:#32d6b012}.Pending,.Lead,.Draft,.Trial,.Pending-approval{color:var(--warn);border-color:#f2b85b44;background:#f2b85b11}.Error,.Past-due{color:var(--err);border-color:#fa718744;background:#fa718711}.Simulated,.Sent,.Running{color:#b495ff;border-color:#9b78ff44;background:#9674ff12}.li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #ffffff0b;font-size:10px}.li:last-child{border-bottom:0}.li small{font-size:8px}.bar{height:5px;background:#ffffff0b;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),var(--vio))}
-.dash-kpis{margin-bottom:13px}.dashboard-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(250px,.82fr);gap:13px;align-items:start}.dash-main,.dash-rail{display:grid;gap:13px;min-width:0}.route-card{padding:15px 16px 12px}.route-wrap{width:100%;overflow:hidden}.route-svg{display:block;width:100%;height:auto;min-height:180px}.route-svg text{font-family:var(--f)}.route-grid{stroke:var(--chart-grid);stroke-width:1;stroke-dasharray:3 6}.route-track{fill:none;stroke-width:10;stroke-linecap:round;opacity:.82;filter:url(#routeGlow)}.route-track.thin{stroke-width:5;opacity:.65}.route-node{fill:#111a2b;stroke-width:2.2}.route-stage{fill:var(--mut);font-size:9px;font-weight:550}.route-caption{fill:var(--tx);font-size:9px}.route-small{fill:var(--mut);font-size:7px}.route-key{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:8px}.route-key i{display:inline-block;width:7px;height:7px;border-radius:50%}.route-legend{display:flex;gap:18px;align-items:center;justify-content:flex-start;border-top:1px solid #ffffff0b;padding-top:10px;margin-top:3px}.route-note{margin-left:auto;color:var(--mut);font-size:8px}.two-lower{display:grid;grid-template-columns:1.2fr 1fr;gap:13px}.mini-chart{width:100%;height:auto;display:block}.mini-chart text{font-family:var(--f)}.activity-list{max-height:240px;overflow:auto}.queue-row{display:grid;grid-template-columns:27px minmax(0,1fr) auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #ffffff0b}.queue-row:last-child{border-bottom:0}.queue-icon{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:#8059fa18;color:#aa8fff}.queue-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.queue-copy{min-width:0}.queue-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px}.queue-copy small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--mut);font-size:8px}.queue-empty{padding:15px 0;color:var(--mut);font-size:9px}.status-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 9px #32d6b066}.notice-row{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #ffffff0b}.notice-row:last-child{border:0}.notice-mark{width:22px;height:22px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f2b85b16;color:var(--warn);font-size:11px}.notice-row b{font-size:9px}.notice-row small{display:block;color:var(--mut);font-size:8px}
-input,select,textarea{width:100%;padding:9px 11px;color:var(--tx);background:var(--input);border:1px solid #ffffff16;border-radius:8px}input:focus,select:focus,textarea:focus{border-color:#7792ff;outline:2px solid #7792ff28}label{display:block;color:var(--mut);font-size:9px;margin:12px 0 4px}.tw{width:100%;overflow:auto;border-radius:8px}table{width:100%;border-collapse:collapse;font-size:10px}th{text-align:left;padding:9px;color:var(--mut);font-size:8px;text-transform:uppercase;letter-spacing:.09em;font-weight:600;border-bottom:1px solid var(--bd);white-space:nowrap}td{padding:10px 9px;border-bottom:1px solid #ffffff0b;vertical-align:top}tbody tr:hover td{background:#ffffff04}tr:last-child td{border-bottom:0}.err{color:var(--err);background:#fa718711;border:1px solid #fa718733;border-radius:8px;padding:8px 10px;margin-top:10px}.okb{color:var(--teal);background:#32d6b011;border:1px solid #32d6b033;border-radius:9px;padding:11px;margin-top:6px}.mail{background:var(--input);border:1px solid var(--bd);border-radius:8px;padding:11px;white-space:pre-wrap;font-size:10px}.lp{padding:36px 20px;text-align:center;border-radius:12px;background:radial-gradient(ellipse at 50% 0,#253665,var(--surface) 70%);border:1px solid #ffffff15}.lp h3{font-size:22px;margin:8px 0}.chat{display:flex;flex-direction:column;gap:14px}.me{align-self:flex-end;max-width:80%;padding:9px 12px;border-radius:11px;background:#1d2b50}.step{display:flex;gap:9px;padding:9px 0;border-top:1px solid #ffffff0d}.step .n{width:20px;height:20px;border-radius:50%;background:#1d2b50;text-align:center;font-size:10px;line-height:20px;flex:none}
-#modal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-start;justify-content:center;padding:32px 14px;overflow:auto;background:#030711bb;backdrop-filter:blur(6px)}#modal.on{display:flex}#mb{width:100%;max-width:520px;padding:21px;background:linear-gradient(150deg,var(--card-hi),var(--card));border:1px solid #ffffff1a;border-radius:14px;box-shadow:var(--shadow)}#mb h2{margin:0 0 12px;font-size:14px}#toast{position:fixed;right:15px;bottom:15px;z-index:60;display:flex;flex-direction:column;gap:7px}.t{max-width:320px;padding:9px 12px;background:var(--card-hi);border:1px solid var(--bd);border-left:3px solid var(--teal);border-radius:8px;box-shadow:var(--shadow);font-size:10px}.t.e{border-left-color:var(--err)}
-body[data-theme="light"]{color-scheme:light;--bg:#eef2f8;--side:#f8faff;--top:#f8faff;--card:#fff;--card-hi:#fff;--bd:#dce3ef;--hv:#edf1f8;--tx:#1a263c;--mut:#687790;--blue:#426ce4;--vio:#7551db;--teal:#087f66;--warn:#9a6509;--err:#bd3850;--input:#fbfcff;--surface:#f5f7fc;--shadow:0 18px 42px #2334541b;--glow:#7257d811;--line:#dce3ef;--chart-grid:#d8dfec;--route-violet:#7f50dd;--route-blue:#386fe1;--route-teal:#078c78;background:radial-gradient(ellipse at 55% -22%,#dbe4ff 0,transparent 43%),var(--bg)}body[data-theme="light"] #side{background:var(--side);border-color:var(--bd)}body[data-theme="light"] #top{background:#f8faffeb;border-color:var(--bd)}body[data-theme="light"] .card{background:linear-gradient(150deg,#fff,#f9fbff);border-color:var(--bd);box-shadow:0 6px 20px #263b5b0b}body[data-theme="light"] .ws,body[data-theme="light"] .side-status{background:#fff;border-color:var(--bd)}body[data-theme="light"] .nav.on{color:#3959b5;background:#e7edff;box-shadow:inset 2px 0 #527fff}body[data-theme="light"] .nav:hover{background:#eef2fa;color:#273753}body[data-theme="light"] .global-search input{background:#fff;border-color:var(--bd)}body[data-theme="light"] .icon-btn:hover,body[data-theme="light"] .btn.s:hover{background:#eff3fa}body[data-theme="light"] .btn.s{color:var(--tx);background:#fff;border-color:var(--bd)}body[data-theme="light"] .pill{background:#fff}body[data-theme="light"] .li,body[data-theme="light"] td,body[data-theme="light"] .route-legend,body[data-theme="light"] .queue-row,body[data-theme="light"] .notice-row{border-color:#e8edf5}body[data-theme="light"] .route-node{fill:#fff}body[data-theme="light"] .lp{background:radial-gradient(ellipse at 50% 0,#e5eaff,#f7f9fd 70%);border-color:var(--bd)}body[data-theme="light"] .me{background:#e9edff}body[data-theme="light"] #mb{background:linear-gradient(150deg,#fff,#f7f9fd);border-color:var(--bd)}body[data-theme="light"] .mail{background:#f7f9fc}body[data-theme="light"] tbody tr:hover td{background:#f7f9fc}body[data-theme="light"] .queue-icon{background:#7751db10;color:#6746c4}body[data-theme="light"] .notice-mark{background:#bd821316}
-@media(max-width:1120px){main{padding-left:18px;padding-right:18px}#top{margin-left:-18px;margin-right:-18px;padding:0 18px}.dashboard-grid{grid-template-columns:minmax(0,1.45fr) minmax(230px,.8fr)}.g4{gap:9px}.kpi{padding:10px;gap:8px}}
-@media(max-width:900px){.g2,.g3{grid-template-columns:1fr}.g2[style*="grid-template-columns:1fr 1.6fr"]{grid-template-columns:1fr}#side{transform:translateX(-102%);box-shadow:var(--shadow)}#side.open{transform:translateX(0)}main{margin-left:0;padding:0 16px 30px}#top{margin:0 -16px 17px;padding:0 16px;height:59px;gap:9px}#top .menu-toggle,#top .top-brand{display:block}#top .menu-toggle{flex:none;padding:5px 8px}#top .top-brand{font-size:11px;letter-spacing:.13em}.workspace-head{display:none}.global-search{max-width:none}.top-actions{gap:4px}.profile-copy{display:none}.profile-chip{padding:3px 0 3px 5px;border:0}.dashboard-grid{grid-template-columns:1fr}.dash-rail{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.dash-rail>.card:first-child{grid-row:span 2}}
-@media(max-width:650px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.two-lower{grid-template-columns:1fr}.dash-rail{grid-template-columns:1fr 1fr}.page-head h1{font-size:19px}.page-head p{max-width:330px}.kpi{min-height:74px}.kpi b{font-size:19px}.kpi-icon{width:31px;height:31px}.route-card{padding:12px}.route-svg{min-height:135px}.route-legend{gap:9px;flex-wrap:wrap}.route-note{margin-left:0}.dashboard-grid{gap:10px}.dash-main,.dash-rail{gap:10px}}
-@media(max-width:430px){main{padding-left:11px;padding-right:11px}#top{margin-left:-11px;margin-right:-11px;padding:0 11px;gap:6px}.top-brand{display:none!important}.global-search input{font-size:9px}.top-actions .header-action{font-size:0!important;padding:7px!important}.top-actions .header-action:after{content:'+';font-size:15px}.top-actions .theme-toggle{font-size:0!important;width:32px;padding:7px!important}.dash-rail{grid-template-columns:1fr}.dash-rail>.card:first-child{grid-row:auto}.g4{gap:7px}.kpi{padding:9px}.kpi-icon{display:none}.kpi b{font-size:18px}.page-head{align-items:flex-start}.page-head .btn{flex:none}.route-svg{min-height:110px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
-</style></head><body>
-<aside id="side"></aside><main><div id="top"><button class="btn s sm menu-toggle" data-a="menu" aria-label="Toggle navigation">☰</button><b class="top-brand">NEXUS</b><div class="workspace-head"><small>Workspace</small><b>Kairos Demo Workspace</b></div><div class="global-search"><input id="globalSearch" type="search" placeholder="Search sections…" aria-label="Search sections"><div id="searchResults"></div></div><div class="top-actions"><button class="icon-btn" data-a="nav" data-id="log" aria-label="Open workflow activity" title="Workflow activity">♧</button><button class="btn header-action" data-a="newEv">＋ New event</button><div class="profile-chip" aria-label="Kairos demo workspace profile"><span class="avatar">KD</span><span class="profile-copy"><b>Kairos Demo</b><small>Workspace admin</small></span></div><button class="btn s sm theme-toggle" data-a="theme" aria-label="Toggle color theme" title="Toggle light and dark mode">☼</button></div></div><div id="app"></div></main>
-<div id="modal"><div id="mb"></div></div><div id="toast"></div>
-<script>
-const D=864e5,$=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ds=n=>new Date(Date.now()+n*D).toISOString().slice(0,10),fd=d=>new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<1?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'};
-const cls=s=>s.replace(/\s/g,'-').replace(/\(.*\)/,'').replace(/-$/,'');
-const pill=s=>`<span class="pill ${cls(s)}">${esc(s)}</span>`;
-const IC={overview:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',ai:'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z',events:'M3 5h18v16H3zM3 10h18M8 3v4M16 3v4',crm:'M16 8a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM4 21c0-4 4-6 8-6s8 2 8 6',marketing:'M3 11v3l14 6V5L3 11z',site:'M3 4h18v16H3zM3 9h18',subs:'M2 6h20v12H2zM2 10h20',log:'M4 6h16M4 12h16M4 18h10'};
-const ic=k=>`<svg class="i" viewBox="0 0 24 24"><path d="${IC[k]}"/></svg>`;
-const NAV=[['overview','Overview'],['ai','AI Command Center'],['events','Events & Webinars'],['crm','CRM'],['marketing','Marketing'],['site','Website Builder'],['subs','Subscriptions'],['log','Workflow Activity']];
-let S,view='overview',q='',selEv=null,aiBusy=false;
-=======
 <!doctype html>
 <html lang="en">
   <head>
@@ -488,150 +450,798 @@ let S,view='overview',q='',selEv=null,aiBusy=false;
           grid-template-columns: 1fr;
         }
       }
->>>>>>> origin/prachi
 
-function seed(){const ev=(id,title,d,time,cap,desc)=>({id,title,date:ds(d),time,cap,desc,page:{head:'',sub:'',cta:'Reserve my seat'}});
- const cu=(i,name,email,status,source)=>({id:'c'+i,name,email,status,source});
- const R=[[4,1,3],[3,1,2],[6,1,1],[2,1,0],[7,2,1],[1,3,9],[2,3,8],[5,3,7],[8,3,6]];
- const s={n:20,events:[ev('e1','Product Launch Webinar',6,'16:00',150,'Live walkthrough of our Q4 product release with a Q&A session.'),ev('e2','AI for Operations Workshop',13,'11:30',5,'Hands-on session on automating business workflows with AI.'),ev('e3','Customer Success Roundtable',-4,'15:00',40,'Past session: best practices from our top customers.')],
- cust:[cu(1,'Aarav Mehta','aarav@finedge.in','Customer','Referral'),cu(2,'Priya Nair','priya@orbitlabs.io','Active','LinkedIn'),cu(3,'Rohan Shah','rohan@brightcart.com','Lead','Website'),cu(4,'Sana Khan','sana@pixelforge.dev','Active','Webinar'),cu(5,'Vikram Rao','vikram@northwind.co','Customer','Referral'),cu(6,'Meera Iyer','meera@lumenhq.com','Lead','LinkedIn'),cu(7,'Kabir Singh','kabir@stackpilot.io','Lead','Webinar'),cu(8,'Ananya Das','ananya@verdant.in','Active','Website')],
- regs:R.map((r,i)=>({id:'REG-'+(900+i),cid:'c'+r[0],eid:'e'+r[1],ts:Date.now()-r[2]*D-i*36e5})),
- camps:[{id:'m1',name:'Launch reminder – 24h',eid:'e1',subject:'Tomorrow: {{event}}',body:'Hi {{name}},\n\nA quick reminder that {{event}} starts soon. We saved your seat.\n\nSee you there,\nTeam Kairos',status:'Draft'}],
- log:[],plan:'Growth',bill:'monthly',subStatus:'Active',chat:[]};
- const L=(m,t,st,ty)=>s.log.push({ts:Date.now()-m*6e4,type:ty,msg:t,status:st});
- L(300,'Event created: Product Launch Webinar','Success','Event');L(200,'Campaign draft created: Launch reminder – 24h','Success','Campaign');L(50,'Registration: Priya Nair → Product Launch Webinar','Success','Registration');L(49,'CRM: existing customer linked (priya@orbitlabs.io)','Success','CRM');
- s.log.reverse();return s}
-const log=(type,msg,status)=>S.log.unshift({ts:Date.now(),type,msg,status});
-const evOf=id=>S.events.find(e=>e.id==id),cuOf=id=>S.cust.find(c=>c.id==id),nReg=id=>S.regs.filter(r=>r.eid==id).length;
-const upcoming=()=>S.events.filter(e=>e.date>=ds(0)).sort((a,b)=>a.date.localeCompare(b.date));
-function toast(m,e){const t=document.createElement('div');t.className='t'+(e?' e':'');t.textContent=m;$('#toast').append(t);setTimeout(()=>t.remove(),3200)}
+      body {
+        min-height: 100vh;
+        background:
+          radial-gradient(ellipse at 92% 0%, #eeeaff 0, transparent 34rem),
+          var(--bg);
+        color: var(--tx);
+      }
+      #side {
+        width: 248px;
+        background: rgba(255, 255, 255, 0.96);
+        padding: 22px 14px;
+        gap: 6px;
+        transition: transform 0.25s ease;
+        box-shadow: 8px 0 30px #27254a08;
+      }
+      .brand { padding: 4px 10px 18px; }
+      .brand b { color: var(--tx); font-size: 20px; }
+      .brand small { margin-top: 3px; }
+      .ws {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #fbfaff, #f5f3ff);
+      }
+      .ws b { margin-top: 2px; }
+      .nav {
+        min-height: 42px;
+        padding: 9px 12px;
+        border-radius: 11px;
+        gap: 12px;
+        transition: color 0.18s ease, background 0.18s ease;
+      }
+      .nav.on {
+        color: #5444d2;
+        background: linear-gradient(110deg, #eeeaff, #f6f2ff);
+        box-shadow: inset 3px 0 var(--blue);
+        font-weight: 650;
+      }
+      main {
+        width: calc(100% - 248px);
+        max-width: none;
+        margin-left: 248px;
+        padding: 34px clamp(24px, 4vw, 58px) 56px;
+      }
+      #app { width: 100%; max-width: 1480px; margin: 0 auto; }
+      h1 {
+        color: #252640;
+        font-size: clamp(25px, 2.2vw, 31px);
+        line-height: 1.2;
+        letter-spacing: -0.035em;
+        margin: 0 0 5px;
+      }
+      h2 {
+        color: #30314c;
+        font-size: 16px;
+        letter-spacing: -0.01em;
+        margin: 0 0 14px;
+      }
+      .sub { margin-bottom: 24px; }
+      .grid { gap: 18px; align-items: stretch; }
+      .g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .g2 { grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); }
+      .g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .card {
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 5px 18px #24234608;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      }
+      .card.h:hover {
+        border-color: #c9c2ff;
+        box-shadow: 0 12px 30px #39336d12;
+        transform: translateY(-2px);
+      }
+      .kpi {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(145deg, #fff 55%, #f7f5ff);
+      }
+      .kpi::after {
+        content: "";
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        top: -30px;
+        right: -24px;
+        border-radius: 50%;
+        background: #e9e5ff;
+      }
+      .kpi:nth-child(2) { background: linear-gradient(145deg, #fff 55%, #f1fbf8); }
+      .kpi:nth-child(2)::after { background: #d9f5eb; }
+      .kpi:nth-child(3) { background: linear-gradient(145deg, #fff 55%, #fff8ed); }
+      .kpi:nth-child(3)::after { background: #ffedce; }
+      .kpi:nth-child(4) { background: linear-gradient(145deg, #fff 55%, #fff2f5); }
+      .kpi:nth-child(4)::after { background: #ffe0e9; }
+      .kpi small, .kpi b { position: relative; z-index: 1; }
+      .kpi b { color: #292a47; font-size: 30px; line-height: 1.2; }
+      .row.sp > * { min-width: 0; }
+      .btn {
+        background: linear-gradient(135deg, #7566f1, #5e4dd8);
+        border-radius: 10px;
+        padding: 9px 15px;
+        box-shadow: 0 4px 10px #6757e82b;
+        transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      }
+      .btn:hover {
+        background: linear-gradient(135deg, #6656e7, #5140cb);
+        box-shadow: 0 6px 14px #6757e83b;
+        transform: translateY(-1px);
+      }
+      .btn.s { background: #fff; box-shadow: none; }
+      .btn.s:hover { border-color: #cbc5ff; box-shadow: none; }
+      .btn.v { background: linear-gradient(135deg, #b35ce5, #923aca); }
+      input, select, textarea {
+        min-width: 0;
+        background: #fff;
+        border-radius: 10px;
+        padding: 10px 12px;
+        box-shadow: 0 1px 2px #22213a08;
+      }
+      textarea { min-height: 100px; resize: vertical; }
+      input:focus, select:focus, textarea:focus {
+        outline: 3px solid #6757e822;
+        border-color: var(--blue);
+      }
+      label { font-weight: 600; }
+      .tw { border-radius: 10px; }
+      table { text-align: left; }
+      th {
+        background: #f8f8fc;
+        font-weight: 650;
+        padding: 11px 12px;
+      }
+      td { padding: 13px 12px; }
+      tbody tr:last-child td { border-bottom: 0; }
+      .pill { padding: 3px 9px; }
+      .Success, .Active, .Customer, .Ready, .Approved {
+        color: var(--ok);
+        border-color: #a6e6cd;
+        background: #e9f8f1;
+      }
+      .Pending, .Lead, .Draft, .Trial, .Pending-approval {
+        color: var(--warn);
+        border-color: #f1d29f;
+        background: #fff6e7;
+      }
+      .Error, .Past-due {
+        color: var(--err);
+        border-color: #f0b5c0;
+        background: #fff0f3;
+      }
+      .Completed {
+        color: #59627b;
+        border-color: #d9ddeb;
+        background: #f1f3f8;
+      }
+      .Full {
+        color: var(--err);
+        border-color: #f0b5c0;
+        background: #fff0f3;
+      }
+      .Simulated, .Sent, .Running {
+        color: var(--vio);
+        border-color: #dcc2f2;
+        background: #f8efff;
+      }
+      .err {
+        background: #fff0f3;
+        border-color: #f0b5c0;
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .okb {
+        background: #e9f8f1;
+        border-color: #a6e6cd;
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .bar { height: 7px; background: #eeedf6; }
+      .bar i {
+        background: linear-gradient(90deg, #7161ed, #b05fe2);
+        border-radius: inherit;
+      }
+      .li { padding: 12px 0; align-items: center; }
+      .li > span { min-width: 0; overflow-wrap: anywhere; }
+      #modal {
+        background: #25233b66;
+        backdrop-filter: blur(4px);
+        padding: max(40px, 8vh) 14px;
+      }
+      #mb {
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 24px 70px #211e4433;
+      }
+      .t {
+        border-left: 4px solid #20a876;
+        padding: 12px 15px;
+        border-radius: 11px;
+        box-shadow: 0 10px 26px #27254a17;
+      }
+      .me { background: #eeeaff; border: 1px solid #ddd7ff; border-radius: 14px; }
+      .step .n { background: #eeeaff; color: #5948d4; }
+      .lp {
+        background: radial-gradient(ellipse at top, #eeeaff, transparent 65%), #fbfaff;
+        border-color: #e6e2fb;
+        border-radius: 16px;
+        padding: clamp(28px, 5vw, 52px) 24px;
+      }
+      .lp h3 { color: #292747; font-size: clamp(24px, 4vw, 32px); }
+      .mail { background: #fafaff; border-radius: 10px; padding: 14px; }
+      button:focus-visible { outline: 3px solid #6757e855; outline-offset: 2px; }
+      @media (max-width: 1100px) {
+        .g4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .g2, .g3 { grid-template-columns: minmax(0, 1fr); }
+      }
+      @media (max-width: 860px) {
+        #side { box-shadow: 12px 0 35px #27254a20; }
+        main { width: 100%; margin-left: 0; padding: 20px 22px 40px; }
+        #top { margin-bottom: 24px; }
+        #top > b { color: var(--tx); }
+      }
+      @media (max-width: 560px) {
+        main { padding: 16px 14px 32px; }
+        .g4 { grid-template-columns: minmax(0, 1fr); }
+        .card { padding: 16px; }
+        .row.sp { align-items: flex-start; }
+        .row.sp > .btn { flex: none; }
+        #modal { padding: 18px 10px; }
+        #mb { padding: 18px; }
+        .li { align-items: flex-start; }
+      }
+    </style>
+  </head>
+  <body>
+    <aside id="side"></aside>
+    <main>
+      <div id="top">
+        <button class="btn s sm" data-a="menu">☰ Menu</button
+        ><b style="letter-spacing: 0.14em">NEXUS</b>
+      </div>
+      <div id="app"></div>
+    </main>
+    <div id="modal"><div id="mb"></div></div>
+    <div id="toast"></div>
+    <script>
+      const D = 864e5,
+        $ = (s) => document.querySelector(s),
+        esc = (s) =>
+          String(s ?? "").replace(
+            /[&<>"']/g,
+            (c) =>
+              ({
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;",
+              })[c],
+          );
+      const ds = (n) => new Date(Date.now() + n * D).toISOString().slice(0, 10),
+        fd = (d) =>
+          new Date(d + "T00:00").toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+      const ago = (t) => {
+        const m = Math.round((Date.now() - t) / 6e4);
+        return m < 1
+          ? "just now"
+          : m < 60
+            ? m + "m ago"
+            : m < 1440
+              ? Math.round(m / 60) + "h ago"
+              : Math.round(m / 1440) + "d ago";
+      };
+      const cls = (s) =>
+        s
+          .replace(/\s/g, "-")
+          .replace(/\(.*\)/, "")
+          .replace(/-$/, "");
+      const pill = (s) => `<span class="pill ${cls(s)}">${esc(s)}</span>`;
+      const IC = {
+        overview: "M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z",
+        ai: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z",
+        events: "M3 5h18v16H3zM3 10h18M8 3v4M16 3v4",
+        crm: "M16 8a4 4 0 1 0-8 0 4 4 0 0 0 8 0zM4 21c0-4 4-6 8-6s8 2 8 6",
+        marketing: "M3 11v3l14 6V5L3 11z",
+        site: "M3 4h18v16H3zM3 9h18",
+        subs: "M2 6h20v12H2zM2 10h20",
+        log: "M4 6h16M4 12h16M4 18h10",
+      };
+      const ic = (k) =>
+        `<svg class="i" viewBox="0 0 24 24"><path d="${IC[k]}"/></svg>`;
+      const NAV = [
+        ["overview", "Overview"],
+        ["ai", "AI Command Center"],
+        ["events", "Events & Webinars"],
+        ["crm", "CRM"],
+        ["marketing", "Marketing"],
+        ["site", "Website Builder"],
+        ["subs", "Subscriptions"],
+        ["log", "Workflow Activity"],
+      ];
+      let S,
+        view = "overview",
+        q = "",
+        selEv = null,
+        aiBusy = false;
 
-function register(eid,name,email){name=name.trim();email=email.trim().toLowerCase();const e=evOf(eid);
- if(!name)return{err:'Full name is required.'};if(!email)return{err:'Email is required.'};
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))return{err:'Please enter a valid email address.'};
- if(e.date<ds(0))return{err:'Registration is closed: this event has already taken place.'};
- let c=S.cust.find(x=>x.email==email);
- if(c&&S.regs.some(r=>r.eid==eid&&r.cid==c.id)){log('Registration','Duplicate blocked: '+email+' → '+e.title,'Error');return{err:email+' is already registered for this event.'}}
- if(nReg(eid)>=e.cap){log('Registration','Capacity reached for '+e.title+'; rejected '+email,'Error');return{err:'This event is full ('+e.cap+' seats).'}}
- const isNew=!c;if(isNew){c={id:'c'+(++S.n),name,email,status:'Lead',source:'Event registration'};S.cust.push(c)}
- const r={id:'REG-'+(1000+ ++S.n),cid:c.id,eid,ts:Date.now()};S.regs.push(r);
- log('Registration',c.name+' → '+e.title,'Success');log('CRM',isNew?'New customer created: '+email:'Existing customer reused: '+email+' (linked to '+e.title+')','Success');
- return{ok:1,r,c,e,isNew}}
+      function seed() {
+        const ev = (id, title, d, time, cap, desc) => ({
+          id,
+          title,
+          date: ds(d),
+          time,
+          cap,
+          desc,
+          page: { head: "", sub: "", cta: "Reserve my seat" },
+        });
+        const cu = (i, name, email, status, source) => ({
+          id: "c" + i,
+          name,
+          email,
+          status,
+          source,
+        });
+        const R = [
+          [4, 1, 3],
+          [3, 1, 2],
+          [6, 1, 1],
+          [2, 1, 0],
+          [7, 2, 1],
+          [1, 3, 9],
+          [2, 3, 8],
+          [5, 3, 7],
+          [8, 3, 6],
+        ];
+        const s = {
+          n: 20,
+          events: [
+            ev(
+              "e1",
+              "Product Launch Webinar",
+              6,
+              "16:00",
+              150,
+              "Live walkthrough of our Q4 product release with a Q&A session.",
+            ),
+            ev(
+              "e2",
+              "AI for Operations Workshop",
+              13,
+              "11:30",
+              5,
+              "Hands-on session on automating business workflows with AI.",
+            ),
+            ev(
+              "e3",
+              "Customer Success Roundtable",
+              -4,
+              "15:00",
+              40,
+              "Past session: best practices from our top customers.",
+            ),
+          ],
+          cust: [
+            cu(1, "Aarav Mehta", "aarav@finedge.in", "Customer", "Referral"),
+            cu(2, "Priya Nair", "priya@orbitlabs.io", "Active", "LinkedIn"),
+            cu(3, "Rohan Shah", "rohan@brightcart.com", "Lead", "Website"),
+            cu(4, "Sana Khan", "sana@pixelforge.dev", "Active", "Webinar"),
+            cu(5, "Vikram Rao", "vikram@northwind.co", "Customer", "Referral"),
+            cu(6, "Meera Iyer", "meera@lumenhq.com", "Lead", "LinkedIn"),
+            cu(7, "Kabir Singh", "kabir@stackpilot.io", "Lead", "Webinar"),
+            cu(8, "Ananya Das", "ananya@verdant.in", "Active", "Website"),
+          ],
+          regs: R.map((r, i) => ({
+            id: "REG-" + (900 + i),
+            cid: "c" + r[0],
+            eid: "e" + r[1],
+            ts: Date.now() - r[2] * D - i * 36e5,
+          })),
+          camps: [
+            {
+              id: "m1",
+              name: "Launch reminder – 24h",
+              eid: "e1",
+              subject: "Tomorrow: {{event}}",
+              body: "Hi {{name}},\n\nA quick reminder that {{event}} starts soon. We saved your seat.\n\nSee you there,\nTeam Kairos",
+              status: "Draft",
+            },
+          ],
+          log: [],
+          plan: "Growth",
+          bill: "monthly",
+          subStatus: "Active",
+          chat: [],
+        };
+        const L = (m, t, st, ty) =>
+          s.log.push({
+            ts: Date.now() - m * 6e4,
+            type: ty,
+            msg: t,
+            status: st,
+          });
+        L(300, "Event created: Product Launch Webinar", "Success", "Event");
+        L(
+          200,
+          "Campaign draft created: Launch reminder – 24h",
+          "Success",
+          "Campaign",
+        );
+        L(
+          50,
+          "Registration: Priya Nair → Product Launch Webinar",
+          "Success",
+          "Registration",
+        );
+        L(
+          49,
+          "CRM: existing customer linked (priya@orbitlabs.io)",
+          "Success",
+          "CRM",
+        );
+        s.log.reverse();
+        return s;
+      }
+      const log = (type, msg, status) =>
+        S.log.unshift({ ts: Date.now(), type, msg, status });
+      const evOf = (id) => S.events.find((e) => e.id == id),
+        cuOf = (id) => S.cust.find((c) => c.id == id),
+        nReg = (id) => S.regs.filter((r) => r.eid == id).length;
+      const upcoming = () =>
+        S.events
+          .filter((e) => e.date >= ds(0))
+          .sort((a, b) => a.date.localeCompare(b.date));
+      function toast(m, e) {
+        const t = document.createElement("div");
+        t.className = "t" + (e ? " e" : "");
+        t.textContent = m;
+        $("#toast").append(t);
+        setTimeout(() => t.remove(), 3200);
+      }
 
-/* ---------- views ---------- */
-const V={};
-V.overview=()=>{const up=upcoming(),days=[...Array(7)].map((_,i)=>{const d=new Date(Date.now()-(6-i)*D);return{l:d.toLocaleDateString('en-IN',{weekday:'short'}),n:S.regs.filter(r=>new Date(r.ts).toDateString()==d.toDateString()).length}}),mx=Math.max(3,...days.map(d=>d.n));
- const cnt=(t,st)=>S.log.filter(l=>l.type==t&&(!st||l.status==st)).length,ready=S.camps.filter(c=>c.status=='Pending approval'||c.status=='Ready'),errCount=S.log.filter(l=>l.status=='Error').length;
- const icon=(kind)=>({people:'<circle cx="9" cy="8" r="3"/><path d="M3 19c0-3.2 2.4-5 6-5s6 1.8 6 5M16 5.5a3 3 0 0 1 0 5.8M17 14c2.5.5 4 2.2 4 5"',event:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"',reg:'<path d="M4 18V6m0 12h16M8 14l3-4 3 2 5-6"/>',campaign:'<path d="m3 11 18-7-7 17-3-7-8-3Z"/><path d="m11 14 4-4"/>'})[kind];
- const kpi=(kind,label,value,sub,color,bg,trend='Live workspace data')=>`<div class="card kpi" style="--kcolor:${color};--kbg:${bg};--kglow:${bg}"><span class="kpi-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${icon(kind)}</svg></span><span class="kpi-copy"><small>${label}</small><b>${value}</b><small class="trend ${trend=='Live workspace data'?'neutral':''}">${sub}</small></span></div>`;
- const points=days.map((d,i)=>{const x=54+i*79,y=145-(d.n/mx*108);return`${i?'L':'M'} ${x} ${y}`}).join(' '),area=points+` L ${54+6*79} 153 L 54 153 Z`;
- const trend=`<svg class="mini-chart" viewBox="0 0 560 190" role="img" aria-label="Registration counts by day over the past week"><defs><linearGradient id="trendFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--blue)" stop-opacity=".28"/><stop offset="1" stop-color="var(--blue)" stop-opacity="0"/></linearGradient><filter id="trendGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${[0,1,2,3].map(i=>`<line x1="42" x2="548" y1="${25+i*40}" y2="${25+i*40}" stroke="var(--chart-grid)" stroke-dasharray="3 5"/><text x="32" y="${28+i*40}" fill="var(--mut)" font-size="8" text-anchor="end">${Math.round(mx*(3-i)/3)}</text>`).join('')}<path d="${area}" fill="url(#trendFill)"/><path d="${points}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#trendGlow)"/>${days.map((d,i)=>{const x=54+i*79,y=145-(d.n/mx*108);return`<circle cx="${x}" cy="${y}" r="3" fill="var(--card-hi)" stroke="var(--blue)" stroke-width="2"><title>${d.l}: ${d.n} registrations</title></circle><text x="${x}" y="171" fill="var(--mut)" font-size="8" text-anchor="middle">${d.l}</text>`}).join('')}</svg>`;
- const route=`<svg class="route-svg" viewBox="0 0 760 248" role="img" aria-label="Illustrative Nexus demo workflow routing from event intake through registration validation and CRM sync"><defs><filter id="routeGlow" x="-30%" y="-50%" width="160%" height="200%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="pathV" x1="0" x2="1"><stop stop-color="var(--route-violet)" stop-opacity=".25"/><stop offset=".5" stop-color="var(--route-violet)"/><stop offset="1" stop-color="var(--route-blue)"/></linearGradient><linearGradient id="pathB" x1="0" x2="1"><stop stop-color="var(--route-blue)" stop-opacity=".18"/><stop offset=".55" stop-color="var(--route-blue)"/><stop offset="1" stop-color="var(--route-teal)"/></linearGradient></defs>${[0,1,2,3,4,5,6,7,8,9].map(i=>`<line class="route-grid" x1="${26+i*78}" x2="${26+i*78}" y1="41" y2="218"/>`).join('')}<path class="route-track" stroke="url(#pathV)" d="M50 89 C120 89 135 74 205 84 S290 104 355 87 S450 73 515 91 S615 100 692 91"/><path class="route-track" stroke="url(#pathB)" d="M50 125 C125 125 140 155 205 143 S290 121 355 137 S455 151 515 130 S620 105 692 91"/><path class="route-track thin" stroke="var(--route-teal)" d="M50 178 C145 178 145 169 205 177 S290 185 355 168 S452 148 515 160 S615 150 692 91"/><path class="route-track thin" stroke="var(--route-violet)" d="M50 104 C135 104 135 140 205 137 S290 115 355 126 S450 126 515 119 S622 106 692 91" opacity=".55"/>${[['Intake',50],['Register',205],['Validate',355],['CRM sync',515]].map(([name,x])=>`<text class="route-stage" x="${x}" y="24" text-anchor="middle">${name}</text><rect x="${x-5}" y="48" width="10" height="157" rx="5" fill="var(--card-hi)" stroke="var(--route-blue)" stroke-opacity=".45"/><rect x="${x-2}" y="65" width="4" height="125" rx="3" fill="var(--route-blue)" opacity=".7"/><circle class="route-node" cx="${x}" cy="89" r="7" stroke="var(--route-violet)"/><circle class="route-node" cx="${x}" cy="137" r="6" stroke="var(--route-blue)"/><circle class="route-node" cx="${x}" cy="177" r="5" stroke="var(--route-teal)"/>`).join('')}<text class="route-stage" x="690" y="24" text-anchor="middle">Outcome</text><circle cx="692" cy="91" r="22" fill="var(--card-hi)" stroke="var(--route-violet)" stroke-width="2"/><circle cx="692" cy="91" r="16" fill="#8a63f522"/><path d="m685 91 5 5 10-11" fill="none" stroke="var(--route-teal)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><text class="route-caption" x="692" y="129" text-anchor="middle">Complete</text><path d="M515 177 C580 177 597 198 657 198" fill="none" stroke="var(--route-teal)" stroke-width="2" stroke-dasharray="4 5"/><circle cx="658" cy="198" r="8" fill="var(--card-hi)" stroke="var(--route-teal)" stroke-width="2"/><text class="route-small" x="657" y="220" text-anchor="middle">Approval gate</text><text class="route-small" x="50" y="230">New event</text><text class="route-small" x="205" y="230">Registration</text><text class="route-small" x="355" y="230">Duplicate check</text><text class="route-small" x="515" y="230">Customer record</text></svg>`;
- const approvalRows=ready.slice(0,4).map(c=>`<div class="queue-row"><span class="queue-icon"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/></svg></span><span class="queue-copy"><b>${esc(c.name)}</b><small>${esc(evOf(c.eid)?.title||'Campaign review')}</small></span>${pill(c.status)}</div>`).join('');
- const latest=S.log.slice(0,4).map(l=>`<div class="li"><span>${esc(l.msg)}<br><small class="mut">${esc(l.type)} · ${ago(l.ts)}</small></span>${pill(l.status)}</div>`).join('');
- const eventRows=up.slice(0,3).map(e=>`<div class="li"><span><b>${esc(e.title)}</b><br><small class="mut">${fd(e.date)} · ${esc(e.time)}</small><div class="bar" style="width:130px;margin-top:5px"><i style="width:${Math.min(100,nReg(e.id)/e.cap*100)}%"></i></div></span><small class="mut">${nReg(e.id)}/${e.cap}</small></div>`).join('');
- return`<div class="page-head"><div><div class="eyebrow">Workspace overview</div><h1>Operations command center</h1><p>Monitor your events, customer flow, and approvals in one place.</p></div><span class="pill Simulated"><i class="status-dot"></i> Demo workspace</span></div>
- <div class="grid g4 dash-kpis">${kpi('people','Customers',S.cust.length,S.cust.filter(c=>c.status=='Lead').length+' active leads','#9a7bff','#8a63f520')}${kpi('event','Upcoming webinars',up.length,up[0]?'Next · '+fd(up[0].date):'No scheduled events','#4e91ff','#4e91ff20')}${kpi('reg','Registrations',S.regs.length,'Across '+S.events.length+' events','#35d4c1','#32d6b01b')}${kpi('campaign','Campaigns',S.camps.length,S.camps.filter(c=>c.status=='Ready').length+' approved · '+ready.length+' in review','#e1ad5d','#f2b85b1b')}</div>
- <div class="dashboard-grid"><div class="dash-main"><section class="card route-card"><div class="card-head"><h2>Workflow routing map</h2><span class="pill Simulated"><i class="status-dot"></i> Demo flow</span></div><div class="route-wrap">${route}</div><div class="route-legend"><span class="route-key"><i style="background:var(--route-violet)"></i>Registration path</span><span class="route-key"><i style="background:var(--route-blue)"></i>CRM sync</span><span class="route-key"><i style="background:var(--route-teal)"></i>Approval checkpoint</span><small class="route-note">Illustrative routing · actions update shared demo state</small></div></section>
- <div class="two-lower"><section class="card"><div class="card-head"><h2>Registration trend</h2><small>Last 7 days · live demo records</small></div>${trend}</section><section class="card"><div class="card-head"><h2>Recent activity</h2><button class="btn s sm" data-a="nav" data-id="log">View log</button></div><div class="activity-list">${latest||'<p class="mut">No activity yet.</p>'}</div></section></div></div>
- <aside class="dash-rail"><section class="card"><div class="card-head"><h2>Campaign approval queue</h2><span class="pill Pending">${ready.length} open</span></div>${approvalRows||'<div class="queue-empty">No campaigns need review. Create a draft in Marketing to begin.</div>'}<button class="btn s sm" style="margin-top:9px" data-a="nav" data-id="marketing">Open Marketing</button></section><section class="card"><div class="card-head"><h2>Workflow health</h2><small><span class="status-dot"></span> Session status</small></div><div class="li"><span>CRM links recorded<br><small class="mut">Successful synchronization actions</small></span><b>${cnt('CRM','Success')}</b></div><div class="li"><span>Scripted workflow runs<br><small class="mut">AI command center demo</small></span><b>${cnt('AI')}</b></div><div class="li"><span>Blocked or failed actions<br><small class="mut">Logged in this session</small></span>${pill(errCount?'Error':'Success')}</div><div class="notice-row"><span class="notice-mark">i</span><span><b>Simulation boundaries</b><small>AI plans are scripted. No external systems are connected.</small></span></div></section><section class="card"><div class="card-head"><h2>Upcoming events</h2><button class="btn s sm" data-a="nav" data-id="events">All events</button></div>${eventRows||'<div class="queue-empty">No upcoming events. Create an event to start collecting registrations.</div>'}</section></aside></div>`};
+      function register(eid, name, email) {
+        name = name.trim();
+        email = email.trim().toLowerCase();
+        const e = evOf(eid);
+        if (!name) return { err: "Full name is required." };
+        if (!email) return { err: "Email is required." };
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
+          return { err: "Please enter a valid email address." };
+        if (e.date < ds(0))
+          return {
+            err: "Registration is closed: this event has already taken place.",
+          };
+        let c = S.cust.find((x) => x.email == email);
+        if (c && S.regs.some((r) => r.eid == eid && r.cid == c.id)) {
+          log(
+            "Registration",
+            "Duplicate blocked: " + email + " → " + e.title,
+            "Error",
+          );
+          return { err: email + " is already registered for this event." };
+        }
+        if (nReg(eid) >= e.cap) {
+          log(
+            "Registration",
+            "Capacity reached for " + e.title + "; rejected " + email,
+            "Error",
+          );
+          return { err: "This event is full (" + e.cap + " seats)." };
+        }
+        const isNew = !c;
+        if (isNew) {
+          c = {
+            id: "c" + ++S.n,
+            name,
+            email,
+            status: "Lead",
+            source: "Event registration",
+          };
+          S.cust.push(c);
+        }
+        const r = {
+          id: "REG-" + (1000 + ++S.n),
+          cid: c.id,
+          eid,
+          ts: Date.now(),
+        };
+        S.regs.push(r);
+        log("Registration", c.name + " → " + e.title, "Success");
+        log(
+          "CRM",
+          isNew
+            ? "New customer created: " + email
+            : "Existing customer reused: " +
+                email +
+                " (linked to " +
+                e.title +
+                ")",
+          "Success",
+        );
+        return { ok: 1, r, c, e, isNew };
+      }
 
-V.events=()=>`<div class="row sp"><div><h1>Events & Webinars</h1><p class="sub">Create, edit, and open registration for events.</p></div><button class="btn" data-a="newEv">+ New event</button></div>
-<div class="grid g3">${S.events.map(e=>{const n=nReg(e.id),past=e.date<ds(0);return`<div class="card h"><div class="row sp"><b>${esc(e.title)}</b>${pill(past?'Completed':n>=e.cap?'Full':'Active')}</div><p class="mut" style="min-height:42px">${esc(e.desc)}</p><p>${fd(e.date)} · ${esc(e.time)}</p><div class="bar"><i style="width:${Math.min(100,n/e.cap*100)}%"></i></div><small class="mut">${n} / ${e.cap} registered</small><div class="row" style="margin-top:14px"><button class="btn sm" data-a="reg" data-id="${e.id}">Register</button><button class="btn s sm" data-a="viewEv" data-id="${e.id}">View</button><button class="btn s sm" data-a="editEv" data-id="${e.id}">Edit</button></div></div>`}).join('')}</div>`;
+      /* ---------- views ---------- */
+      const V = {};
+      V.overview = () => {
+        const up = upcoming(),
+          days = [...Array(7)].map((_, i) => {
+            const d = new Date(Date.now() - (6 - i) * D);
+            return {
+              l: d.toLocaleDateString("en-IN", { weekday: "short" }),
+              n: S.regs.filter(
+                (r) => new Date(r.ts).toDateString() == d.toDateString(),
+              ).length,
+            };
+          }),
+          mx = Math.max(3, ...days.map((d) => d.n));
+        const k = (l, v, s) =>
+            `<div class="card kpi h"><small>${l}</small><b>${v}</b><small>${s}</small></div>`,
+          cnt = (t, s) =>
+            S.log.filter((l) => l.type == t && (!s || l.status == s)).length;
+        const chart = `<svg viewBox="0 0 560 200" width="100%" role="img" aria-label="Registrations per day">${[0, 1, 2, 3].map((i) => `<line x1="30" x2="550" y1="${20 + i * 45}" y2="${20 + i * 45}" stroke="#E9E8F1"/><text x="22" y="${24 + i * 45}" fill="#777C96" font-size="10" text-anchor="end">${Math.round((mx * (3 - i)) / 3)}</text>`).join("")}${days
+          .map((d, i) => {
+            const h = (d.n / mx) * 135,
+              x = 48 + i * 73;
+            return `<rect x="${x}" y="${155 - h}" width="40" height="${h}" rx="5" fill="${i == 6 ? "#B05FE2" : "#7161ED"}"/><text x="${x + 20}" y="${149 - h}" fill="#30314C" font-size="11" text-anchor="middle">${d.n || ""}</text><text x="${x + 20}" y="180" fill="#777C96" font-size="11" text-anchor="middle">${d.l}</text>`;
+          })
+          .join("")}</svg>`;
+        const wf = [
+          [
+            "Registration → CRM sync",
+            cnt("CRM", "Success") + " synced",
+            "Success",
+          ],
+          [
+            "Campaigns awaiting approval",
+            S.camps.filter((c) => c.status == "Pending approval").length +
+              " pending",
+            "Pending",
+          ],
+          ["AI command runs", cnt("AI") + " runs", "Simulated"],
+          [
+            "Errors / blocked actions",
+            cnt("Registration", "Error") + cnt("Error") + " logged",
+            cnt("Registration", "Error") ? "Error" : "Success",
+          ],
+        ];
+        return `<h1>Overview</h1><p class="sub">Live metrics from shared workspace state · Kairos Demo Workspace</p>
+ <div class="grid g4">${k("Total customers", S.cust.length, S.cust.filter((c) => c.status == "Lead").length + " leads")}${k("Upcoming webinars", up.length, "next: " + (up[0] ? fd(up[0].date) : "—"))}${k("Total registrations", S.regs.length, "across " + S.events.length + " events")}${k("Active campaigns", S.camps.filter((c) => !c.status.startsWith("Sent")).length, S.camps.filter((c) => c.status == "Ready").length + " ready")}</div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h2>Registration trend · last 7 days</h2>${chart}</div>
+ <div class="card"><h2>Workflow status</h2>${wf.map((w) => `<div class="li"><span>${w[0]}<br><small class="mut">${w[1]}</small></span>${pill(w[2])}</div>`).join("")}</div></div>
+ <div class="grid g2" style="margin-top:16px"><div class="card"><h2>Recent activity</h2>${S.log
+   .slice(0, 6)
+   .map(
+     (l) =>
+       `<div class="li"><span>${esc(l.msg)}<br><small class="mut">${l.type} · ${ago(l.ts)}</small></span>${pill(l.status)}</div>`,
+   )
+   .join("")}</div>
+ <div class="card"><h2>Upcoming events</h2>${up.length ? up.map((e) => `<div class="li" style="display:block"><div class="row sp"><b>${esc(e.title)}</b><small class="mut">${fd(e.date)}</small></div><div class="bar" style="margin:8px 0 4px"><i style="width:${Math.min(100, (nReg(e.id) / e.cap) * 100)}%"></i></div><small class="mut">${nReg(e.id)} / ${e.cap} registered</small></div>`).join("") : '<p class="mut">No upcoming events.</p>'}</div></div>`;
+      };
 
-V.crm=()=>`<h1>CRM</h1><p class="sub">Customers are created automatically from event registrations.</p><div class="card"><div class="row sp" style="margin-bottom:12px"><input id="q" placeholder="Search name, email, status, source…" value="${esc(q)}" style="max-width:340px"><small class="mut" id="cc"></small></div><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Registration history</th><th>Status</th><th>Source</th></tr></thead><tbody id="cb"></tbody></table></div></div>`;
-function crmRows(){const t=q.toLowerCase(),rows=S.cust.filter(c=>[c.name,c.email,c.status,c.source].join(' ').toLowerCase().includes(t));
- $('#cc').textContent=rows.length+' of '+S.cust.length+' customers';
- $('#cb').innerHTML=rows.map(c=>{const h=S.regs.filter(r=>r.cid==c.id);return`<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.email)}</td><td>${h.length?h.map(r=>`<div>${esc(evOf(r.eid)?.title)} <small class="mut">· ${ago(r.ts)}</small></div>`).join(''):'<span class="mut">None</span>'}</td><td>${pill(c.status)}</td><td>${esc(c.source)}</td></tr>`}).join('')||'<tr><td colspan="5" class="mut">No matching customers.</td></tr>'}
+      V.events =
+        () => `<div class="row sp"><div><h1>Events & Webinars</h1><p class="sub">Create, edit, and open registration for events.</p></div><button class="btn" data-a="newEv">+ New event</button></div>
+<div class="grid g3">${S.events
+          .map((e) => {
+            const n = nReg(e.id),
+              past = e.date < ds(0);
+            return `<div class="card h"><div class="row sp"><b>${esc(e.title)}</b>${pill(past ? "Completed" : n >= e.cap ? "Full" : "Active")}</div><p class="mut" style="min-height:42px">${esc(e.desc)}</p><p>${fd(e.date)} · ${esc(e.time)}</p><div class="bar"><i style="width:${Math.min(100, (n / e.cap) * 100)}%"></i></div><small class="mut">${n} / ${e.cap} registered</small><div class="row" style="margin-top:14px"><button class="btn sm" data-a="reg" data-id="${e.id}">Register</button><button class="btn s sm" data-a="viewEv" data-id="${e.id}">View</button><button class="btn s sm" data-a="editEv" data-id="${e.id}">Edit</button></div></div>`;
+          })
+          .join("")}</div>`;
 
-const fill=(t,c,e)=>t.replaceAll('{{name}}',c).replaceAll('{{event}}',e?e.title:'(event)').replaceAll('{{date}}',e?fd(e.date):'');
-V.marketing=()=>`<div class="row sp"><div><h1>Marketing</h1><p class="sub">Campaign drafts with an approval step. Sending is simulated — no email is ever sent.</p></div><button class="btn" data-a="newCamp">+ New campaign</button></div>
-<div class="card"><div class="tw"><table><thead><tr><th>Campaign</th><th>Event</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.camps.map(c=>`<tr><td><b>${esc(c.name)}</b><br><small class="mut">${esc(c.subject)}</small></td><td>${esc(evOf(c.eid)?.title||'—')}</td><td>${pill(c.status)}</td><td><div class="row"><button class="btn s sm" data-a="editCamp" data-id="${c.id}">Edit / preview</button>${c.status=='Draft'?`<button class="btn sm" data-a="cs" data-id="${c.id}" data-to="Pending approval">Request approval</button>`:''}${c.status=='Pending approval'?`<button class="btn sm" data-a="cs" data-id="${c.id}" data-to="Ready">Approve</button><button class="btn s sm" data-a="cs" data-id="${c.id}" data-to="Draft">Reject</button>`:''}${c.status=='Ready'?`<button class="btn v sm" data-a="cs" data-id="${c.id}" data-to="Sent (simulated)">Send (simulated)</button>`:''}</div></td></tr>`).join('')||'<tr><td colspan="4" class="mut">No campaigns yet.</td></tr>'}</tbody></table></div></div>`;
+      V.crm = () =>
+        `<h1>CRM</h1><p class="sub">Customers are created automatically from event registrations.</p><div class="card"><div class="row sp" style="margin-bottom:12px"><input id="q" placeholder="Search name, email, status, source…" value="${esc(q)}" style="max-width:340px"><small class="mut" id="cc"></small></div><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Registration history</th><th>Status</th><th>Source</th></tr></thead><tbody id="cb"></tbody></table></div></div>`;
+      function crmRows() {
+        const t = q.toLowerCase(),
+          rows = S.cust.filter((c) =>
+            [c.name, c.email, c.status, c.source]
+              .join(" ")
+              .toLowerCase()
+              .includes(t),
+          );
+        $("#cc").textContent =
+          rows.length + " of " + S.cust.length + " customers";
+        $("#cb").innerHTML =
+          rows
+            .map((c) => {
+              const h = S.regs.filter((r) => r.cid == c.id);
+              return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.email)}</td><td>${h.length ? h.map((r) => `<div>${esc(evOf(r.eid)?.title)} <small class="mut">· ${ago(r.ts)}</small></div>`).join("") : '<span class="mut">None</span>'}</td><td>${pill(c.status)}</td><td>${esc(c.source)}</td></tr>`;
+            })
+            .join("") ||
+          '<tr><td colspan="5" class="mut">No matching customers.</td></tr>';
+      }
 
-V.site=()=>{selEv=evOf(selEv)?selEv:S.events[0]?.id;const e=evOf(selEv);if(!e)return'<h1>Website Builder</h1><p class="mut">Create an event first.</p>';const p=e.page;
- return`<h1>Website Builder</h1><p class="sub">Edit the landing page; the preview reads the selected event's live data.</p><div class="grid g2" style="grid-template-columns:1fr 1.6fr"><div class="card"><label>Event</label><select data-sel>${S.events.map(x=>`<option value="${x.id}" ${x.id==selEv?'selected':''}>${esc(x.title)}</option>`).join('')}</select>
+      const fill = (t, c, e) =>
+        t
+          .replaceAll("{{name}}", c)
+          .replaceAll("{{event}}", e ? e.title : "(event)")
+          .replaceAll("{{date}}", e ? fd(e.date) : "");
+      V.marketing =
+        () => `<div class="row sp"><div><h1>Marketing</h1><p class="sub">Campaign drafts with an approval step. Sending is simulated — no email is ever sent.</p></div><button class="btn" data-a="newCamp">+ New campaign</button></div>
+<div class="card"><div class="tw"><table><thead><tr><th>Campaign</th><th>Event</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.camps.map((c) => `<tr><td><b>${esc(c.name)}</b><br><small class="mut">${esc(c.subject)}</small></td><td>${esc(evOf(c.eid)?.title || "—")}</td><td>${pill(c.status)}</td><td><div class="row"><button class="btn s sm" data-a="editCamp" data-id="${c.id}">Edit / preview</button>${c.status == "Draft" ? `<button class="btn sm" data-a="cs" data-id="${c.id}" data-to="Pending approval">Request approval</button>` : ""}${c.status == "Pending approval" ? `<button class="btn sm" data-a="cs" data-id="${c.id}" data-to="Ready">Approve</button><button class="btn s sm" data-a="cs" data-id="${c.id}" data-to="Draft">Reject</button>` : ""}${c.status == "Ready" ? `<button class="btn v sm" data-a="cs" data-id="${c.id}" data-to="Sent (simulated)">Send (simulated)</button>` : ""}</div></td></tr>`).join("") || '<tr><td colspan="4" class="mut">No campaigns yet.</td></tr>'}</tbody></table></div></div>`;
+
+      V.site = () => {
+        selEv = evOf(selEv) ? selEv : S.events[0]?.id;
+        const e = evOf(selEv);
+        if (!e)
+          return '<h1>Website Builder</h1><p class="mut">Create an event first.</p>';
+        const p = e.page;
+        return `<h1>Website Builder</h1><p class="sub">Edit the landing page; the preview reads the selected event's live data.</p><div class="grid g2" style="grid-template-columns:1fr 1.6fr"><div class="card"><label>Event</label><select data-sel>${S.events.map((x) => `<option value="${x.id}" ${x.id == selEv ? "selected" : ""}>${esc(x.title)}</option>`).join("")}</select>
  <label>Headline (blank = event title)</label><input id="p1" value="${esc(p.head)}"><label>Description (blank = event description)</label><textarea id="p2" rows="3">${esc(p.sub)}</textarea><label>Button label</label><input id="p3" value="${esc(p.cta)}"><div class="row" style="margin-top:14px"><button class="btn" data-a="savePage">Save page</button></div></div>
- <div class="card"><small class="mut">Preview · ${nReg(e.id)}/${e.cap} registered</small><div class="lp" style="margin-top:10px"><small class="pill Simulated">KAIROS</small><h3 id="v1">${esc(p.head||e.title)}</h3><p class="mut" id="v2">${esc(p.sub||e.desc)}</p><p><b>${fd(e.date)} · ${esc(e.time)}</b></p><button class="btn" data-a="reg" data-id="${e.id}" id="v3">${esc(p.cta||'Register')}</button></div></div></div>`};
+ <div class="card"><small class="mut">Preview · ${nReg(e.id)}/${e.cap} registered</small><div class="lp" style="margin-top:10px"><small class="pill Simulated">KAIROS</small><h3 id="v1">${esc(p.head || e.title)}</h3><p class="mut" id="v2">${esc(p.sub || e.desc)}</p><p><b>${fd(e.date)} · ${esc(e.time)}</b></p><button class="btn" data-a="reg" data-id="${e.id}" id="v3">${esc(p.cta || "Register")}</button></div></div></div>`;
+      };
 
-const PLANS=[['Starter',29,290,'1 workspace · 500 contacts · basic workflows'],['Growth',79,790,'5 workspaces · 10k contacts · AI workflows'],['Scale',199,1990,'Unlimited · 100k contacts · priority support']];
-V.subs=()=>`<div class="row sp"><div><h1>Subscriptions</h1><p class="sub">All billing is <b>simulated</b> — no payment is processed.</p></div><div class="row"><button class="btn ${S.bill=='monthly'?'':'s'}" data-a="bill" data-id="monthly">Monthly</button><button class="btn ${S.bill=='annual'?'':'s'}" data-a="bill" data-id="annual">Annual</button></div></div>
-<div class="grid g3">${PLANS.map(p=>`<div class="card h" ${p[0]==S.plan?'style="border-color:var(--blue)"':''}><div class="row sp"><b>${p[0]}</b>${p[0]==S.plan?pill(S.subStatus):''}</div><p style="font-size:28px;margin:8px 0"><b>$${S.bill=='monthly'?p[1]:p[2]}</b><small class="mut"> / ${S.bill=='monthly'?'month':'year'}</small></p><p class="mut">${p[3]}</p><button class="btn ${p[0]==S.plan?'s':''}" data-a="plan" data-id="${p[0]}" ${p[0]==S.plan?'disabled':''}>${p[0]==S.plan?'Current plan':'Switch (simulated)'}</button></div>`).join('')}</div>
+      const PLANS = [
+        ["Starter", 29, 290, "1 workspace · 500 contacts · basic workflows"],
+        ["Growth", 79, 790, "5 workspaces · 10k contacts · AI workflows"],
+        ["Scale", 199, 1990, "Unlimited · 100k contacts · priority support"],
+      ];
+      V.subs =
+        () => `<div class="row sp"><div><h1>Subscriptions</h1><p class="sub">All billing is <b>simulated</b> — no payment is processed.</p></div><div class="row"><button class="btn ${S.bill == "monthly" ? "" : "s"}" data-a="bill" data-id="monthly">Monthly</button><button class="btn ${S.bill == "annual" ? "" : "s"}" data-a="bill" data-id="annual">Annual</button></div></div>
+<div class="grid g3">${PLANS.map((p) => `<div class="card h" ${p[0] == S.plan ? 'style="border-color:var(--blue)"' : ""}><div class="row sp"><b>${p[0]}</b>${p[0] == S.plan ? pill(S.subStatus) : ""}</div><p style="font-size:28px;margin:8px 0"><b>$${S.bill == "monthly" ? p[1] : p[2]}</b><small class="mut"> / ${S.bill == "monthly" ? "month" : "year"}</small></p><p class="mut">${p[3]}</p><button class="btn ${p[0] == S.plan ? "s" : ""}" data-a="plan" data-id="${p[0]}" ${p[0] == S.plan ? "disabled" : ""}>${p[0] == S.plan ? "Current plan" : "Switch (simulated)"}</button></div>`).join("")}</div>
 <div class="card" style="margin-top:16px"><h2>Subscription status</h2><div class="tw"><table><thead><tr><th>Workspace</th><th>Plan</th><th>Billing</th><th>Status</th><th>Action</th></tr></thead><tbody><tr><td>Kairos Demo Workspace</td><td>${S.plan}</td><td>${S.bill}</td><td>${pill(S.subStatus)}</td><td><div class="row"><button class="btn s sm" data-a="trial">Toggle trial (simulated)</button><button class="btn s sm" data-a="pd">Simulate failed payment</button></div></td></tr></tbody></table></div></div>`;
 
-V.log=()=>`<h1>Workflow Activity</h1><p class="sub">Chronological log of every action in this session (newest first).</p><div class="card"><div class="tw"><table><thead><tr><th>Time</th><th>Type</th><th>Event</th><th>Status</th></tr></thead><tbody>${S.log.map(l=>`<tr><td style="white-space:nowrap">${new Date(l.ts).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',second:'2-digit'})}</td><td>${l.type}</td><td>${esc(l.msg)}</td><td>${pill(l.status)}</td></tr>`).join('')}</tbody></table></div></div>`;
+      V.log = () =>
+        `<h1>Workflow Activity</h1><p class="sub">Chronological log of every action in this session (newest first).</p><div class="card"><div class="tw"><table><thead><tr><th>Time</th><th>Type</th><th>Event</th><th>Status</th></tr></thead><tbody>${S.log.map((l) => `<tr><td style="white-space:nowrap">${new Date(l.ts).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" })}</td><td>${l.type}</td><td>${esc(l.msg)}</td><td>${pill(l.status)}</td></tr>`).join("")}</tbody></table></div></div>`;
 
-V.ai=()=>`<h1>AI Command Center</h1><p class="sub">Steps tagged <span class="pill Success">ACTUAL ACTION</span> change real app state. Steps tagged <span class="pill Simulated">SIMULATED AI</span> are scripted text — no AI API or email service is connected.</p>
-<div class="card"><div class="chat">${S.chat.map(m=>m.role=='u'?`<div class="me">${esc(m.t)}</div>`:`<div><div class="row"><b>NEXUS</b>${pill('Simulated')}</div><p>${esc(m.t)}</p>${(m.steps||[]).map((s,i)=>`<div class="step"><span class="n">${i+1}</span><div style="flex:1"><div class="row sp"><b>${esc(s.t)}</b><span>${pill(s.st)} <span class="pill ${s.k=='a'?'Success':'Simulated'}">${s.k=='a'?'ACTUAL ACTION':'SIMULATED AI'}</span></span></div><small class="mut">${esc(s.res||'…')}</small></div></div>`).join('')}</div>`).join('')||'<p class="mut">Try a command below.</p>'}</div>
+      V.ai =
+        () => `<h1>AI Command Center</h1><p class="sub">Steps tagged <span class="pill Success">ACTUAL ACTION</span> change real app state. Steps tagged <span class="pill Simulated">SIMULATED AI</span> are scripted text — no AI API or email service is connected.</p>
+<div class="card"><div class="chat">${S.chat.map((m) => (m.role == "u" ? `<div class="me">${esc(m.t)}</div>` : `<div><div class="row"><b>NEXUS</b>${pill("Simulated")}</div><p>${esc(m.t)}</p>${(m.steps || []).map((s, i) => `<div class="step"><span class="n">${i + 1}</span><div style="flex:1"><div class="row sp"><b>${esc(s.t)}</b><span>${pill(s.st)} <span class="pill ${s.k == "a" ? "Success" : "Simulated"}">${s.k == "a" ? "ACTUAL ACTION" : "SIMULATED AI"}</span></span></div><small class="mut">${esc(s.res || "…")}</small></div></div>`).join("")}</div>`)).join("") || '<p class="mut">Try a command below.</p>'}</div>
 <div class="row" style="margin:14px 0 10px"><button class="btn s sm" data-a="chip">Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign.</button></div>
-<div class="row" style="flex-wrap:nowrap"><input id="cmd" placeholder="Describe a workflow…" ${aiBusy?'disabled':''}><button class="btn" data-a="run" ${aiBusy?'disabled':''}>Run</button></div></div>`;
+<div class="row" style="flex-wrap:nowrap"><input id="cmd" placeholder="Describe a workflow…" ${aiBusy ? "disabled" : ""}><button class="btn" data-a="run" ${aiBusy ? "disabled" : ""}>Run</button></div></div>`;
 
-/* ---------- modals ---------- */
-const open=h=>{$('#mb').innerHTML=h;$('#modal').classList.add('on')},close=()=>$('#modal').classList.remove('on');
-const fld=(l,n,v='',t='text',x='')=>`<label>${l}</label><input name="${n}" type="${t}" value="${esc(v)}" ${x}>`;
-function evForm(e){e=e||{};return`<h2>${e.id?'Edit event':'New event'}</h2><form data-f="ev" data-id="${e.id||''}" novalidate>${fld('Title *','title',e.title)}<label>Description</label><textarea name="desc" rows="3">${esc(e.desc)}</textarea>${fld('Date *','date',e.date,'date')}${fld('Time *','time',e.time,'time')}${fld('Registration capacity *','cap',e.cap||100,'number','min="1"')}<div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Save event</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`}
-function campForm(c){c=c||{subject:'Reminder: {{event}}',body:'Hi {{name}},\n\nJust a reminder that {{event}} is on {{date}}. We look forward to seeing you!\n\nTeam Kairos',eid:S.events[0]?.id,name:''};
- return`<h2>${c.id?'Edit campaign':'New campaign draft'}</h2><form data-f="camp" data-id="${c.id||''}" novalidate>${fld('Campaign name *','name',c.name)}<label>Event *</label><select name="eid">${S.events.map(e=>`<option value="${e.id}" ${e.id==c.eid?'selected':''}>${esc(e.title)}</option>`).join('')}</select>${fld('Subject *','subject',c.subject)}<label>Message * (use {{name}}, {{event}}, {{date}})</label><textarea name="body" rows="5">${esc(c.body)}</textarea><label>Preview (as sample recipient "Alex")</label><div class="mail" id="pv"></div><div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Save draft</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`}
-function updPv(){const f=$('#mb form[data-f=camp]');if(!f)return;const e=evOf(f.eid.value);$('#pv').textContent='Subject: '+fill(f.subject.value,'Alex',e)+'\n\n'+fill(f.body.value,'Alex',e)}
-function regForm(e){return`<h2>Register: ${esc(e.title)}</h2><p class="mut">${fd(e.date)} · ${esc(e.time)} · ${nReg(e.id)}/${e.cap} seats taken</p><form data-f="reg" data-id="${e.id}" novalidate>${fld('Full name *','name')}${fld('Email *','email','','email')}<div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Confirm registration</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`}
+      /* ---------- modals ---------- */
+      const open = (h) => {
+          $("#mb").innerHTML = h;
+          $("#modal").classList.add("on");
+        },
+        close = () => $("#modal").classList.remove("on");
+      const fld = (l, n, v = "", t = "text", x = "") =>
+        `<label>${l}</label><input name="${n}" type="${t}" value="${esc(v)}" ${x}>`;
+      function evForm(e) {
+        e = e || {};
+        return `<h2>${e.id ? "Edit event" : "New event"}</h2><form data-f="ev" data-id="${e.id || ""}" novalidate>${fld("Title *", "title", e.title)}<label>Description</label><textarea name="desc" rows="3">${esc(e.desc)}</textarea>${fld("Date *", "date", e.date, "date")}${fld("Time *", "time", e.time, "time")}${fld("Registration capacity *", "cap", e.cap || 100, "number", 'min="1"')}<div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Save event</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`;
+      }
+      function campForm(c) {
+        c = c || {
+          subject: "Reminder: {{event}}",
+          body: "Hi {{name}},\n\nJust a reminder that {{event}} is on {{date}}. We look forward to seeing you!\n\nTeam Kairos",
+          eid: S.events[0]?.id,
+          name: "",
+        };
+        return `<h2>${c.id ? "Edit campaign" : "New campaign draft"}</h2><form data-f="camp" data-id="${c.id || ""}" novalidate>${fld("Campaign name *", "name", c.name)}<label>Event *</label><select name="eid">${S.events.map((e) => `<option value="${e.id}" ${e.id == c.eid ? "selected" : ""}>${esc(e.title)}</option>`).join("")}</select>${fld("Subject *", "subject", c.subject)}<label>Message * (use {{name}}, {{event}}, {{date}})</label><textarea name="body" rows="5">${esc(c.body)}</textarea><label>Preview (as sample recipient "Alex")</label><div class="mail" id="pv"></div><div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Save draft</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`;
+      }
+      function updPv() {
+        const f = $("#mb form[data-f=camp]");
+        if (!f) return;
+        const e = evOf(f.eid.value);
+        $("#pv").textContent =
+          "Subject: " +
+          fill(f.subject.value, "Alex", e) +
+          "\n\n" +
+          fill(f.body.value, "Alex", e);
+      }
+      function regForm(e) {
+        return `<h2>Register: ${esc(e.title)}</h2><p class="mut">${fd(e.date)} · ${esc(e.time)} · ${nReg(e.id)}/${e.cap} seats taken</p><form data-f="reg" data-id="${e.id}" novalidate>${fld("Full name *", "name")}${fld("Email *", "email", "", "email")}<div class="err" hidden></div><div class="row" style="margin-top:16px"><button class="btn">Confirm registration</button><button type="button" class="btn s" data-a="close">Cancel</button></div></form>`;
+      }
 
-/* ---------- AI workflow ---------- */
-const POOL=[['Ishaan Verma','ishaan@cloudnine.io'],['Tara Joshi','tara@helixworks.com'],['Neil D\'Souza','neil@harborlane.co']];
-const wait=ms=>new Promise(r=>setTimeout(r,ms));
-async function runAI(cmd){if(!cmd.trim()||aiBusy)return;aiBusy=true;S.chat.push({role:'u',t:cmd});log('AI','Command received: '+cmd.slice(0,70),'Simulated');
- if(!/webinar|event|workshop/i.test(cmd)){S.chat.push({role:'a',t:'(Simulated) I only have a scripted demo workflow. Try: "Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign."'});aiBusy=false;return render()}
- const m=cmd.match(/create (?:a|an) ([a-z0-9 -]+?) (webinar|workshop|event)/i),cap=s=>s.replace(/\b\w/g,c=>c.toUpperCase()),title=m?cap(m[1]+' '+m[2]):'Product Webinar';
- const steps=[['Create event "'+title+'"','a'],['Prepare registration page','a'],['Add registrants to CRM','a'],['Draft reminder campaign','a'],['Write reminder copy with AI','s']].map(([t,k])=>({t,k,st:'Pending'}));
- const msg={role:'a',t:'(Simulated planner) I split your command into this ordered plan and will run each step:',steps};S.chat.push(msg);render();
- const go=async(i,fn)=>{steps[i].st='Running';render();await wait(650);try{steps[i].res=fn();steps[i].st='Success'}catch(e){steps[i].res=e.message;steps[i].st='Error';log('Error','AI step failed: '+e.message,'Error')}render()};
- let ev;await go(0,()=>{ev=S.events.find(e=>e.title.toLowerCase()==title.toLowerCase());if(ev)return'Event already exists — reused it (no duplicate created).';ev={id:'e'+(++S.n),title,desc:'Created via AI Command Center demo workflow.',date:ds(14),time:'16:00',cap:100,page:{head:'',sub:'',cta:'Reserve my seat'}};S.events.push(ev);log('Event','Event created by AI workflow: '+title,'Success');return'Created for '+fd(ev.date)+', capacity 100.'});
- await go(1,()=>{selEv=ev.id;log('Website','Landing page ready for '+title,'Success');return'Landing page is live in Website Builder with this event\'s data.'});
- await go(2,()=>{let a=0,sk=0;POOL.forEach(([n,e])=>{const r=register(ev.id,n,e);r.ok?a++:sk++});return a+' demo registrants registered and synced to CRM; '+sk+' skipped (already registered).'});
- await go(3,()=>{const c={id:'m'+(++S.n),name:title+' reminder',eid:ev.id,subject:'Reminder: {{event}}',body:'',status:'Draft'};c.body='Hi {{name}},\n\n{{event}} is on {{date}}. Your seat is confirmed — see you there!\n\nTeam Kairos';S.camps.push(c);log('Campaign','Campaign draft created by AI workflow: '+c.name,'Success');return'Draft saved in Marketing (needs your approval; nothing is sent).'});
- await go(4,()=>{log('AI','Simulated reminder copy generated','Simulated');return'Scripted template text — no real AI model was called.'});
- msg.t='Done. Steps 1–4 changed real app state (see CRM, Marketing, Workflow Activity). Step 5 and this narration are simulated.';aiBusy=false;render()}
+      /* ---------- AI workflow ---------- */
+      const POOL = [
+        ["Ishaan Verma", "ishaan@cloudnine.io"],
+        ["Tara Joshi", "tara@helixworks.com"],
+        ["Neil D'Souza", "neil@harborlane.co"],
+      ];
+      const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+      async function runAI(cmd) {
+        if (!cmd.trim() || aiBusy) return;
+        aiBusy = true;
+        S.chat.push({ role: "u", t: cmd });
+        log("AI", "Command received: " + cmd.slice(0, 70), "Simulated");
+        if (!/webinar|event|workshop/i.test(cmd)) {
+          S.chat.push({
+            role: "a",
+            t: '(Simulated) I only have a scripted demo workflow. Try: "Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign."',
+          });
+          aiBusy = false;
+          return render();
+        }
+        const m = cmd.match(
+            /create (?:a|an) ([a-z0-9 -]+?) (webinar|workshop|event)/i,
+          ),
+          cap = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase()),
+          title = m ? cap(m[1] + " " + m[2]) : "Product Webinar";
+        const steps = [
+          ['Create event "' + title + '"', "a"],
+          ["Prepare registration page", "a"],
+          ["Add registrants to CRM", "a"],
+          ["Draft reminder campaign", "a"],
+          ["Write reminder copy with AI", "s"],
+        ].map(([t, k]) => ({ t, k, st: "Pending" }));
+        const msg = {
+          role: "a",
+          t: "(Simulated planner) I split your command into this ordered plan and will run each step:",
+          steps,
+        };
+        S.chat.push(msg);
+        render();
+        const go = async (i, fn) => {
+          steps[i].st = "Running";
+          render();
+          await wait(650);
+          try {
+            steps[i].res = fn();
+            steps[i].st = "Success";
+          } catch (e) {
+            steps[i].res = e.message;
+            steps[i].st = "Error";
+            log("Error", "AI step failed: " + e.message, "Error");
+          }
+          render();
+        };
+        let ev;
+        await go(0, () => {
+          ev = S.events.find(
+            (e) => e.title.toLowerCase() == title.toLowerCase(),
+          );
+          if (ev)
+            return "Event already exists — reused it (no duplicate created).";
+          ev = {
+            id: "e" + ++S.n,
+            title,
+            desc: "Created via AI Command Center demo workflow.",
+            date: ds(14),
+            time: "16:00",
+            cap: 100,
+            page: { head: "", sub: "", cta: "Reserve my seat" },
+          };
+          S.events.push(ev);
+          log("Event", "Event created by AI workflow: " + title, "Success");
+          return "Created for " + fd(ev.date) + ", capacity 100.";
+        });
+        await go(1, () => {
+          selEv = ev.id;
+          log("Website", "Landing page ready for " + title, "Success");
+          return "Landing page is live in Website Builder with this event's data.";
+        });
+        await go(2, () => {
+          let a = 0,
+            sk = 0;
+          POOL.forEach(([n, e]) => {
+            const r = register(ev.id, n, e);
+            r.ok ? a++ : sk++;
+          });
+          return (
+            a +
+            " demo registrants registered and synced to CRM; " +
+            sk +
+            " skipped (already registered)."
+          );
+        });
+        await go(3, () => {
+          const c = {
+            id: "m" + ++S.n,
+            name: title + " reminder",
+            eid: ev.id,
+            subject: "Reminder: {{event}}",
+            body: "",
+            status: "Draft",
+          };
+          c.body =
+            "Hi {{name}},\n\n{{event}} is on {{date}}. Your seat is confirmed — see you there!\n\nTeam Kairos";
+          S.camps.push(c);
+          log(
+            "Campaign",
+            "Campaign draft created by AI workflow: " + c.name,
+            "Success",
+          );
+          return "Draft saved in Marketing (needs your approval; nothing is sent).";
+        });
+        await go(4, () => {
+          log("AI", "Simulated reminder copy generated", "Simulated");
+          return "Scripted template text — no real AI model was called.";
+        });
+        msg.t =
+          "Done. Steps 1–4 changed real app state (see CRM, Marketing, Workflow Activity). Step 5 and this narration are simulated.";
+        aiBusy = false;
+        render();
+      }
 
-<<<<<<< HEAD
-/* ---------- shell ---------- */
-function render(){const cmd=$('#cmd')?.value;document.body.dataset.theme=localStorage.getItem('nexus-theme')||'dark';const themeBtn=$('.theme-toggle');if(themeBtn)themeBtn.textContent=document.body.dataset.theme=='light'?'☾ Theme':'☼ Theme';
- $('#side').innerHTML=`<div class="brand"><span><b>NEXUS</b><small>AI Business Operating Platform</small></span></div><div class="ws"><span>Active workspace</span><b>Kairos Demo Workspace</b></div>${NAV.map(n=>`<button class="nav ${view==n[0]?'on':''}" data-a="nav" data-id="${n[0]}">${ic(n[0])}${n[1]}</button>`).join('')}<div style="flex:1"></div><div class="ws"><span>● Platform status</span><b>Demo systems operational</b></div><button class="btn s sm" data-a="reset">↺ Reset demo data</button><small class="mut" style="padding:8px">Team Kairos · CRCE Bit N Build<br>In-memory demo · no backend</small>`;
- $('#app').innerHTML=V[view]();if(view=='crm')crmRows();if(view=='ai'&&cmd)$('#cmd').value=cmd}
-const go=v=>{view=v;$('#side').classList.remove('open');render();scrollTo(0,0)};
-const frm=f=>Object.fromEntries(new FormData(f));
-const showErr=(f,m)=>{const b=f.querySelector('.err');b.textContent=m;b.hidden=false};
-
-document.addEventListener('click',ev=>{const b=ev.target.closest('[data-a]');if(!b){if(ev.target.id=='modal')close();return}const a=b.dataset.a,id=b.dataset.id;
- if(a=='nav'||a=='search-nav'){go(id);$('#searchResults')?.classList.remove('on')}else if(a=='menu')$('#side').classList.toggle('open');else if(a=='theme'){const next=document.body.dataset.theme=='light'?'dark':'light';document.body.dataset.theme=next;localStorage.setItem('nexus-theme',next);b.textContent=next=='light'?'☾ Theme':'☼ Theme'}else if(a=='close')close();
- else if(a=='reset'){if(confirm('Reset all demo data to the original seed?')){S=seed();selEv=null;render();toast('Demo data reset.')}}
- else if(a=='newEv')open(evForm());else if(a=='editEv')open(evForm(evOf(id)));
- else if(a=='reg'){const e=evOf(id);open(e.date<ds(0)?`<h2>${esc(e.title)}</h2><div class="err">Registration is closed: this event has already taken place.</div><div class="row" style="margin-top:16px"><button class="btn s" data-a="close">Close</button></div>`:regForm(e))}
- else if(a=='viewEv'){const e=evOf(id),rs=S.regs.filter(r=>r.eid==id);open(`<h2>${esc(e.title)}</h2><p>${esc(e.desc)}</p><p class="mut">${fd(e.date)} · ${esc(e.time)} · ${rs.length}/${e.cap} registered</p><h2 style="margin-top:16px">Registrants</h2>${rs.map(r=>`<div class="li"><span>${esc(cuOf(r.cid).name)}<br><small class="mut">${esc(cuOf(r.cid).email)}</small></span><small class="mut">${r.id}</small></div>`).join('')||'<p class="mut">None yet.</p>'}<div class="row" style="margin-top:16px"><button class="btn" data-a="reg" data-id="${id}">Register someone</button><button class="btn s" data-a="close">Close</button></div>`)}
- else if(a=='newCamp')open(campForm()),updPv();else if(a=='editCamp')open(campForm(S.camps.find(c=>c.id==id))),updPv();
- else if(a=='cs'){const c=S.camps.find(x=>x.id==id),to=b.dataset.to;c.status=to;
-  log('Campaign',{'Pending approval':'Approval requested: ','Ready':'Approved (marked ready): ','Draft':'Approval rejected, back to draft: ','Sent (simulated)':'SIMULATED send (no email sent): '}[to]+c.name,to=='Sent (simulated)'?'Simulated':to=='Draft'?'Pending':'Success');render();toast(to=='Sent (simulated)'?'Simulated send — no email was sent.':'Campaign → '+to)}
- else if(a=='savePage'){const e=evOf(selEv);e.page={head:$('#p1').value,sub:$('#p2').value,cta:$('#p3').value};log('Website','Landing page saved for '+e.title,'Success');toast('Landing page saved.');render()}
- else if(a=='bill'){S.bill=id;render()}else if(a=='plan'){S.plan=id;S.subStatus='Active';log('Subscription','SIMULATED plan switch to '+id,'Simulated');render();toast('Plan switched (simulated).')}
- else if(a=='trial'){S.subStatus=S.subStatus=='Trial'?'Active':'Trial';log('Subscription','SIMULATED status → '+S.subStatus,'Simulated');render()}
- else if(a=='pd'){S.subStatus='Past due';log('Error','SIMULATED failed payment','Error');render();toast('Simulated failed payment.',1)}
- else if(a=='chip'){runAI(b.textContent)}else if(a=='run'){const i=$('#cmd');runAI(i.value);}});
-document.addEventListener('submit',ev=>{const f=ev.target;if(!f.dataset.f)return;ev.preventDefault();const d=frm(f),id=f.dataset.id;
- if(f.dataset.f=='reg'){const r=register(id,d.name,d.email);if(r.err)return showErr(f,r.err);render();
-  $('#mb').innerHTML=`<h2>Registration confirmed ✓</h2><div class="okb"><b>${esc(r.c.name)}</b>, you're in for <b>${esc(r.e.title)}</b><br>${fd(r.e.date)} · ${esc(r.e.time)}<br><small>Confirmation ${r.r.id} · ${esc(r.c.email)}</small></div><p class="mut">${r.isNew?'New CRM customer created.':'Existing CRM customer reused.'} Dashboard and activity updated. (Confirmation email is simulated.)</p><div class="row"><button class="btn" data-a="close">Done</button></div>`;toast('Registered '+r.c.name)}
- else if(f.dataset.f=='ev'){const cap=parseInt(d.cap,10);if(!d.title.trim())return showErr(f,'Title is required.');if(!d.date)return showErr(f,'Date is required.');if(!d.time)return showErr(f,'Time is required.');if(!(cap>=1))return showErr(f,'Capacity must be a whole number of at least 1.');
-  if(id){const e=evOf(id);if(cap<nReg(id))return showErr(f,'Capacity cannot be below current registrations ('+nReg(id)+').');Object.assign(e,{title:d.title.trim(),desc:d.desc.trim(),date:d.date,time:d.time,cap});log('Event','Event updated: '+e.title,'Success')}
-  else{S.events.push({id:'e'+(++S.n),title:d.title.trim(),desc:d.desc.trim(),date:d.date,time:d.time,cap,page:{head:'',sub:'',cta:'Reserve my seat'}});log('Event','Event created: '+d.title.trim(),'Success')}
-  close();render();toast('Event saved.')}
- else if(f.dataset.f=='camp'){if(!d.name.trim()||!d.subject.trim()||!d.body.trim())return showErr(f,'Name, subject and message are all required.');
-  if(id){const c=S.camps.find(x=>x.id==id);Object.assign(c,{name:d.name.trim(),eid:d.eid,subject:d.subject,body:d.body});if(c.status!='Draft'){c.status='Draft';log('Campaign','Edited after approval step → returned to Draft: '+c.name,'Pending')}else log('Campaign','Campaign draft updated: '+c.name,'Success')}
-  else{S.camps.push({id:'m'+(++S.n),name:d.name.trim(),eid:d.eid,subject:d.subject,body:d.body,status:'Draft'});log('Campaign','Campaign draft created: '+d.name.trim(),'Success')}
-  close();render();toast('Campaign draft saved.')}});
-document.addEventListener('input',e=>{if(e.target.id=='globalSearch'){const box=$('#searchResults'),term=e.target.value.trim().toLowerCase();if(!term){box.classList.remove('on');box.innerHTML='';return}const matches=NAV.filter(n=>n[1].toLowerCase().includes(term));box.innerHTML=matches.map(n=>`<button data-a="search-nav" data-id="${n[0]}">${ic(n[0])} ${n[1]}</button>`).join('')||'<small class="mut" style="display:block;padding:10px">No sections found</small>';box.classList.add('on')}else if(e.target.id=='q'){q=e.target.value;crmRows()}
- else if(e.target.closest('form[data-f=camp]'))updPv();
- else if(['p1','p2','p3'].includes(e.target.id)){const x=evOf(selEv);$('#v1').textContent=$('#p1').value||x.title;$('#v2').textContent=$('#p2').value||x.desc;$('#v3').textContent=$('#p3').value||'Register'}});
-document.addEventListener('change',e=>{if(e.target.dataset.sel!==undefined){selEv=e.target.value;render()}else if(e.target.closest('form[data-f=camp]'))updPv()});
-document.addEventListener('keydown',e=>{if(e.key=='Enter'&&e.target.id=='cmd')runAI(e.target.value);if(e.key=='Escape')close()});
-S=seed();render();
-</script></body></html>
-=======
       /* ---------- shell ---------- */
       function render() {
         const cmd = $("#cmd")?.value;
@@ -861,4 +1471,3 @@ S=seed();render();
     </script>
   </body>
 </html>
->>>>>>> origin/prachi
