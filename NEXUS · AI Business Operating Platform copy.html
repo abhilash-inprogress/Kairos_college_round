@@ -23,7 +23,7 @@
         --vio: #a14de0;
         --ok: #16845b;
         --warn: #a7660a;
-        --err: #c53752;
+        --err: #f8254c;
         --f: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       }
       html {
@@ -1246,7 +1246,7 @@
       function render() {
         const cmd = $("#cmd")?.value;
         $("#side").innerHTML =
-          `<div class="brand"><b>NEXUS</b><small>AI Business Operating Platform</small></div><div class="ws"><span>Workspace</span><b>Kairos Demo Workspace</b></div>${NAV.map((n) => `<button class="nav ${view == n[0] ? "on" : ""}" data-a="nav" data-id="${n[0]}">${ic(n[0])}${n[1]}</button>`).join("")}<div style="flex:1"></div><button class="btn s sm" data-a="reset">↺ Reset demo data</button><small class="mut" style="padding:8px">Team Kairos · CRCE Bit N Build<br>In-memory demo · no backend</small>`;
+          `<div class="brand"><b>NEXUS</b><small>AI Business Operating Platform</small></div><div class="ws"><span>Workspace</span><b>Kairos Demo Workspace</b></div>${NAV.map((n) => `<button class="nav ${view == n[0] ? "on" : ""}" data-a="nav" data-id="${n[0]}">${ic(n[0])}${n[1]}</button>`).join("")}<div style="flex:1"></div><small class="mut" style="padding:8px">Team Kairos · CRCE Bit N Build<br>In-memory demo · no backend</small>`;
         $("#app").innerHTML = V[view]();
         if (view == "crm") crmRows();
         if (view == "ai" && cmd) $("#cmd").value = cmd;
@@ -1275,14 +1275,7 @@
         if (a == "nav") go(id);
         else if (a == "menu") $("#side").classList.toggle("open");
         else if (a == "close") close();
-        else if (a == "reset") {
-          if (confirm("Reset all demo data to the original seed?")) {
-            S = seed();
-            selEv = null;
-            render();
-            toast("Demo data reset.");
-          }
-        } else if (a == "newEv") open(evForm());
+        else if (a == "newEv") open(evForm());
         else if (a == "editEv") open(evForm(evOf(id)));
         else if (a == "reg") {
           const e = evOf(id);

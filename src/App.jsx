@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { loadWorkspace, saveWorkspace, sendCampaignEmail } from "./workspaceStore.js";
+import {
+  loadWorkspace,
+  openStripePortal,
+  proposeAiWorkflow,
+  saveWorkspace,
+  sendCampaignEmail,
+  startStripeCheckout,
+  syncStripeSubscription,
+} from "./workspaceStore.js";
 
 const DAY = 86_400_000;
 const DEMO_EMAILS = new Set([
@@ -41,6 +49,7 @@ const makeEvent = (id, title, days, time, capacity, description) => ({
   capacity,
   description,
   page: { headline: "", subheading: "", cta: "Reserve my seat" },
+  isDemo: true,
 });
 
 function initialState() {
@@ -78,6 +87,7 @@ function initialState() {
     message,
     status,
     createdAt: Date.now() - minutes * 60_000,
+    isDemo: true,
   }));
   return {
     customers,
@@ -90,11 +100,12 @@ function initialState() {
       subject: "Tomorrow: {{event}}",
       body: "Hi {{name}},\n\nA quick reminder that {{event}} starts soon. We saved your seat.\n\nSee you there,\nTeam Kairos",
       status: "Draft",
+      isDemo: true,
     }],
     activity,
-    plan: "Growth",
+    plan: "Starter",
     billing: "monthly",
-    subscriptionStatus: "Active",
+    subscriptionStatus: "Free",
     counter: 20,
   };
 }
@@ -126,9 +137,14 @@ export default function App({ user, onSignOut }) {
   const [toast, setToast] = useState("");
   const [command, setCommand] = useState("");
   const [chat, setChat] = useState([]);
+  const [workflowProposal, setWorkflowProposal] = useState(null);
+  const [customerForm, setCustomerForm] = useState(null);
   const [campaignForm, setCampaignForm] = useState(null);
   const [pageDraft, setPageDraft] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [billingBusy, setBillingBusy] = useState(false);
+  const [billingError, setBillingError] = useState("");
+  const [campaignError, setCampaignError] = useState("");
   const [workspaceLoading, setWorkspaceLoading] = useState(true);
   const [workspaceError, setWorkspaceError] = useState("");
   const [sendingCampaignId, setSendingCampaignId] = useState("");
@@ -157,13 +173,48 @@ export default function App({ user, onSignOut }) {
     return () => { active = false; };
   }, [user.id, reloadToken]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const billingReturn = params.get("billing");
+    if (!billingReturn) return;
+    setView("subs");
+    const clearReturnUrl = () => window.history.replaceState({}, "", window.location.pathname);
+    if (billingReturn === "success") {
+      const sessionId = params.get("session_id");
+      if (!sessionId) {
+        setToast("Checkout returned without a session ID. Use Refresh subscription to check Stripe.");
+        clearReturnUrl();
+        return;
+      }
+      setBillingBusy(true);
+      syncStripeSubscription(sessionId)
+        .then(async () => {
+          const { state: latestState, chat: latestChat } = await loadWorkspace(initialState());
+          stateRef.current = latestState;
+          setState(latestState);
+          chatRef.current = latestChat;
+          setChat(latestChat);
+          clearReturnUrl();
+          notify("Stripe checkout confirmed and subscription saved.");
+        })
+        .catch((error) => {
+          notify(error instanceof Error ? `Could not confirm Stripe checkout: ${error.message}` : "Could not confirm Stripe checkout. Refresh this page to retry.");
+        })
+        .finally(() => setBillingBusy(false));
+    } else {
+      clearReturnUrl();
+      if (billingReturn === "cancel") setToast("Checkout was canceled. No subscription was started.");
+      else if (billingReturn === "portal") void refreshBilling();
+    }
+  }, []);
+
   const customersById = useMemo(
     () => Object.fromEntries(state.customers.map((customer) => [customer.id, customer])),
     [state.customers],
   );
   const eventById = (id) => state.events.find((event) => event.id === id);
   const registrationsFor = (id) => state.registrations.filter((registration) => registration.eventId === id);
-  const upcoming = [...state.events].filter((event) => event.date >= dateIn(0)).sort((a, b) => a.date.localeCompare(b.date));
+  const upcoming = [...state.events].filter((event) => event.isDemo !== true && event.date >= dateIn(0)).sort((a, b) => a.date.localeCompare(b.date));
 
   function notify(message) {
     setToast(message);
@@ -219,15 +270,6 @@ export default function App({ user, onSignOut }) {
     setMobileMenu(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  async function resetDemo() {
-    if (!window.confirm("Reset all demo data to the original seed?")) return;
-    const reset = initialState();
-    if (!await commitState(reset)) return;
-    if (!await commitChat([])) return;
-    setSearch("");
-    setSelectedEvent("e1");
-    notify("Demo data reset.");
-  }
   async function registerPerson(eventId, name, email) {
     const event = eventById(eventId);
     const cleanName = name.trim();
@@ -242,13 +284,15 @@ export default function App({ user, onSignOut }) {
     }
     const count = registrationsFor(eventId).length;
     if (count >= event.capacity) return `This event is full (${event.capacity} seats).`;
-    const customer = existing || {
+    const customer = existing
+      ? existing.isDemo === true ? { ...existing, name: cleanName, isDemo: false } : existing
+      : {
       id: `c${state.counter + 1}`,
       name: cleanName,
       email: cleanEmail,
       status: "Lead",
       source: "Event registration",
-    };
+      };
     const registration = {
       id: `REG-${1000 + state.counter + 2}`,
       customerId: customer.id,
@@ -258,7 +302,9 @@ export default function App({ user, onSignOut }) {
     const saved = await commitState((current) => ({
       ...current,
       counter: current.counter + (existing ? 1 : 2),
-      customers: existing ? current.customers : [...current.customers, customer],
+      customers: existing
+        ? current.customers.map((item) => item.id === customer.id ? customer : item)
+        : [...current.customers, customer],
       registrations: [...current.registrations, registration],
       activity: [
         { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-crm`, type: "CRM", message: `${existing ? "Existing customer reused: " : "New customer created: "}${cleanEmail}`, status: "Success", createdAt: Date.now() },
@@ -288,6 +334,7 @@ export default function App({ user, onSignOut }) {
       time: eventData.time,
       capacity,
       description: eventData.description.trim(),
+      isDemo: false,
     };
     const saved = await commitState((s) => ({
       ...s,
@@ -322,6 +369,7 @@ export default function App({ user, onSignOut }) {
       subject: String(data.get("subject")).trim(),
       body: String(data.get("body")).trim(),
       status: "Draft",
+      isDemo: false,
     };
     if (!campaign.name || !campaign.subject || !campaign.body) return;
     const saved = await commitState((s) => ({
@@ -334,14 +382,117 @@ export default function App({ user, onSignOut }) {
     setCampaignForm(null);
     notify("Campaign draft saved.");
   }
+  async function saveCustomer(event) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const customer = {
+      ...customerForm,
+      name: String(data.get("name")).trim(),
+      email: String(data.get("email")).trim().toLowerCase(),
+      status: String(data.get("status")),
+      source: String(data.get("source")).trim(),
+      isDemo: false,
+    };
+    if (!customer.name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(customer.email) || !customer.source) {
+      setCustomerForm((current) => ({ ...current, error: "Enter a name, valid email address, and source." }));
+      return;
+    }
+    const duplicate = stateRef.current.customers.some((item) =>
+      item.email.toLowerCase() === customer.email && item.id !== customer.id
+    );
+    if (duplicate) {
+      setCustomerForm((current) => ({ ...current, error: "A customer with this email address already exists." }));
+      return;
+    }
+    const isNew = !customer.id;
+    customer.id = customer.id || globalThis.crypto?.randomUUID?.() || `customer-${Date.now()}`;
+    delete customer.error;
+    const saved = await commitState((current) => ({
+      ...current,
+      customers: isNew
+        ? [...current.customers, customer]
+        : current.customers.map((item) => item.id === customer.id ? customer : item),
+      activity: [{
+        id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-customer`,
+        type: "CRM",
+        message: `${isNew ? "Customer created" : "Customer updated"}: ${customer.email}`,
+        status: "Success",
+        createdAt: Date.now(),
+      }, ...current.activity],
+    }));
+    if (!saved) return;
+    setCustomerForm(null);
+    notify(`Customer ${isNew ? "created" : "updated"}.`);
+  }
+  function openCustomerForm(customer = null) {
+    setCustomerForm(customer
+      ? { ...customer }
+      : { name: "", email: "", status: "Lead", source: "Manual entry" });
+  }
+  async function redirectToStripeSession(createSession, expectedHost) {
+    setBillingBusy(true);
+    setBillingError("");
+    try {
+      const result = await createSession();
+      const url = new URL(result?.url || "");
+      if (url.protocol !== "https:" || url.hostname !== expectedHost) {
+        throw new Error("Stripe returned an unexpected billing URL.");
+      }
+      window.location.assign(url.toString());
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not start the billing session.";
+      setBillingError(message);
+      notify(message);
+      setBillingBusy(false);
+    }
+  }
+  function beginCheckout(plan) {
+    return redirectToStripeSession(() => startStripeCheckout(plan), "checkout.stripe.com");
+  }
+  function manageBilling() {
+    return redirectToStripeSession(openStripePortal, "billing.stripe.com");
+  }
+  async function refreshBilling() {
+    setBillingBusy(true);
+    setBillingError("");
+    try {
+      await syncStripeSubscription();
+      const { state: latestState, chat: latestChat } = await loadWorkspace(initialState());
+      stateRef.current = latestState;
+      setState(latestState);
+      chatRef.current = latestChat;
+      setChat(latestChat);
+      notify("Stripe subscription details refreshed.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not refresh Stripe subscription details.";
+      setBillingError(message);
+      notify(message);
+    } finally {
+      setBillingBusy(false);
+    }
+  }
+  async function selectPlan(planName) {
+    if (planName !== "Starter") return beginCheckout(planName);
+    if (stateRef.current.stripeCustomerId) return manageBilling();
+    const saved = await commitState((current) => ({
+      ...current,
+      plan: "Starter",
+      subscriptionStatus: "Free",
+      stripeSubscriptionId: null,
+      stripePriceId: null,
+      stripeCurrentPeriodEnd: null,
+      stripeCancelAtPeriodEnd: false,
+    }));
+    if (saved) notify("Starter is your current free plan.");
+  }
   async function setCampaignStatus(campaign, status) {
     const saved = await commitState((s) => ({
       ...s,
       campaigns: s.campaigns.map((item) => item.id === campaign.id ? { ...item, status } : item),
-      activity: [{ id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-campaign-status`, type: "Campaign", message: `${status === "Sent (simulated)" ? "SIMULATED send (no email sent): " : `Campaign moved to ${status}: `}${campaign.name}`, status: status === "Sent (simulated)" ? "Simulated" : "Success", createdAt: Date.now() }, ...s.activity],
+      activity: [{ id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-campaign-status`, type: "Campaign", message: `Campaign moved to ${status}: ${campaign.name}`, status: "Success", createdAt: Date.now() }, ...s.activity],
     }));
     if (!saved) return;
-    notify(status === "Sent (simulated)" ? "Simulated send — no email was sent." : `Campaign → ${status}`);
+    notify(`Campaign → ${status}`);
   }
   async function sendCampaign(campaign) {
     const event = eventById(campaign.eventId);
@@ -352,7 +503,9 @@ export default function App({ user, onSignOut }) {
       .map((customer) => customer.email.trim().toLowerCase())
       .filter((email) => !DEMO_EMAILS.has(email)));
     if (!emails.size) {
-      notify("No eligible attendees yet. Register real attendees for the linked event first; sample demo attendees are excluded.");
+      const message = "No eligible attendees yet. Register real attendees for the linked event first; sample demo attendees are excluded.";
+      setCampaignError(message);
+      notify(message);
       return;
     }
     const confirmed = window.confirm(
@@ -361,106 +514,180 @@ export default function App({ user, onSignOut }) {
     if (!confirmed) return;
 
     setSendingCampaignId(campaign.id);
+    setCampaignError("");
     try {
       const result = await sendCampaignEmail(campaign.id);
-      const { state: latestState, chat: latestChat } = await loadWorkspace(initialState());
-      stateRef.current = latestState;
-      setState(latestState);
-      chatRef.current = latestChat;
-      setChat(latestChat);
-      if (result.status === "Sent") {
-        notify(`Campaign sent to ${result.sent} attendee${result.sent === 1 ? "" : "s"}.`);
-      } else if (result.status === "Delivery needs review") {
-        notify(`Delivery needs review: ${result.sent} confirmed sent, ${result.failed} not confirmed. Check Resend and Supabase logs; do not retry blindly.`);
-      } else {
-        notify(`No emails were confirmed as sent. ${result.error || "Review the campaign and provider settings, then try again."}`);
-      }
-    } catch (error) {
+      let refreshWarning = "";
       try {
-        const { state: latestState } = await loadWorkspace(initialState());
+        const { state: latestState, chat: latestChat } = await loadWorkspace(initialState());
         stateRef.current = latestState;
         setState(latestState);
+        chatRef.current = latestChat;
+        setChat(latestChat);
       } catch {
-        // Keep the current view available if the follow-up refresh also fails.
+        refreshWarning = " The email request completed, but workspace status could not be refreshed. Check the campaign status and provider logs before retrying.";
       }
-      notify(error instanceof Error ? `Campaign could not be sent: ${error.message}` : "Campaign could not be sent. Check the Supabase function logs.");
+      if (result.status === "Sent") {
+        if (refreshWarning || result.warning) {
+          const message = `Resend accepted the campaign for ${result.sent} attendee${result.sent === 1 ? "" : "s"}.${result.warning ? ` ${result.warning}` : ""}${refreshWarning}`;
+          setCampaignError(message);
+          notify(message);
+        } else {
+          notify(`Resend accepted the campaign for ${result.sent} attendee${result.sent === 1 ? "" : "s"}.`);
+        }
+      } else if (result.status === "Delivery needs review") {
+        const message = `Delivery needs review: ${result.sent} accepted, ${result.failed} not confirmed. Check Resend and Supabase logs; do not retry blindly.${refreshWarning}`;
+        setCampaignError(message);
+        notify(message);
+      } else {
+        const message = `No emails were accepted by Resend. ${result.error || "Review the campaign and provider settings, then try again."}${refreshWarning}`;
+        setCampaignError(message);
+        notify(message);
+      }
+    } catch (error) {
+      let currentCampaignStatus = "";
+      try {
+        const { state: latestState, chat: latestChat } = await loadWorkspace(initialState());
+        stateRef.current = latestState;
+        setState(latestState);
+        chatRef.current = latestChat;
+        setChat(latestChat);
+        currentCampaignStatus = latestState.campaigns.find((item) => item.id === campaign.id)?.status || "";
+      } catch {
+        // Keep the original send error visible if the status refresh also fails.
+      }
+      const message = currentCampaignStatus === "Sent"
+        ? "The campaign is marked Sent in the workspace. Check Resend delivery logs to confirm inbox delivery; do not send it again."
+        : ["Sending", "Delivery needs review", "Partially sent"].includes(currentCampaignStatus)
+        ? `The send request may have reached Resend. Campaign status is "${currentCampaignStatus}"; check provider logs before retrying.`
+        : error instanceof Error
+        ? `Campaign could not be sent: ${error.message}`
+        : "Campaign could not be sent. Check the Supabase function logs.";
+      setCampaignError(message);
+      notify(message);
     } finally {
       setSendingCampaignId("");
     }
   }
   async function saveLandingPage() {
     if (!selectedEvent || !pageDraft) return;
+    const currentEvent = eventById(selectedEvent);
+    if (!currentEvent) return;
+    const slug = (pageDraft.slug || currentEvent.title).toLowerCase().trim()
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 100);
+    if (!slug) {
+      notify("Choose a title that can be used to create a public page URL.");
+      return;
+    }
+    if (pageDraft.published && state.events.some((event) =>
+      event.id !== selectedEvent && event.page?.published && event.page.slug?.toLowerCase() === slug
+    )) {
+      notify("That public URL is already used by another event.");
+      return;
+    }
+    const page = { ...pageDraft, slug };
     const saved = await commitState((s) => ({
       ...s,
-      events: s.events.map((event) => event.id === selectedEvent ? { ...event, page: pageDraft } : event),
+      events: s.events.map((event) => event.id === selectedEvent ? { ...event, page } : event),
       activity: [{ id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-website`, type: "Website", message: `Landing page saved for ${eventById(selectedEvent)?.title}`, status: "Success", createdAt: Date.now() }, ...s.activity],
     }));
     if (!saved) return;
+    setPageDraft(page);
     notify("Landing page saved.");
   }
   async function runCommand(text = command) {
     const clean = text.trim();
     if (!clean || busy) return;
     setCommand("");
+    setWorkflowProposal(null);
     if (!await appendChat({ role: "user", text: clean })) return;
-    await log("AI", `Command received: ${clean.slice(0, 70)}`, "Simulated");
-    if (!/webinar|event|workshop/i.test(clean)) {
+    setBusy(true);
+    try {
+      const result = await proposeAiWorkflow(clean);
+      if (!result?.supported) {
+        await appendChat({
+          role: "assistant",
+          text: result?.reason || "The workflow agent could not prepare a supported proposal.",
+        });
+        return;
+      }
+      setWorkflowProposal(result.proposal);
+      await log("AI", `Workflow proposal prepared: ${result.proposal.title}`, "Success");
       await appendChat({
         role: "assistant",
-        text: 'This demo can run a scripted event workflow. Try: "Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign."',
+        text: "I prepared an event launch workflow. Review the event details, registration page content, and campaign draft below; nothing is saved until you approve it.",
+        steps: [
+          ["Create event", "Proposed"],
+          ["Prepare registration page", "Proposed"],
+          ["Draft linked campaign", "Proposed"],
+        ],
       });
-      return;
+    } catch (error) {
+      await appendChat({
+        role: "assistant",
+        text: error instanceof Error ? `I could not prepare that workflow: ${error.message}` : "I could not prepare that workflow. Please try again.",
+      });
+    } finally {
+      setBusy(false);
     }
+  }
+  async function approveWorkflowProposal() {
+    if (!workflowProposal || busy) return;
     setBusy(true);
-    const match = clean.match(/create (?:a|an) ([a-z0-9 -]+?) (webinar|workshop|event)/i);
-    const title = match ? `${match[1]} ${match[2]}`.replace(/\b\w/g, (letter) => letter.toUpperCase()) : "Product Webinar";
-    const event = makeEvent(`e${state.counter + 1}`, title, 14, "16:00", 100, "Created via AI Command Center demo workflow.");
-    const demoPeople = [["Ishaan Verma", "ishaan@cloudnine.io"], ["Tara Joshi", "tara@helixworks.com"], ["Neil D'Souza", "neil@harborlane.co"]];
-    const freshCustomers = demoPeople.map(([name, email], index) => ({
-      id: `c${state.counter + index + 2}`, name, email, status: "Lead", source: "Event registration", isDemo: true,
-    }));
-    const newRegistrations = freshCustomers.map((customer, index) => ({
-      id: `REG-${1100 + state.counter * 3 + index}`, customerId: customer.id, eventId: event.id, createdAt: Date.now(), isDemo: true,
-    }));
+    const eventId = globalThis.crypto?.randomUUID?.() || `event-${Date.now()}`;
+    const campaignId = globalThis.crypto?.randomUUID?.() || `campaign-${Date.now()}`;
+    const slug = workflowProposal.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 100);
+    const event = {
+      id: eventId,
+      title: workflowProposal.title,
+      date: workflowProposal.date,
+      time: workflowProposal.time,
+      capacity: workflowProposal.capacity,
+      description: workflowProposal.description,
+      page: {
+        headline: workflowProposal.headline,
+        subheading: workflowProposal.subheading,
+        cta: "Register",
+        slug,
+        published: false,
+      },
+    };
     const campaign = {
-      id: `m${state.counter + 2}`,
-      name: `${title} reminder`,
-      eventId: event.id,
-      subject: "Reminder: {{event}}",
-      body: `Hi {{name}},\n\n${title} is on ${formatDate(event.date)}. Your seat is confirmed — see you there!\n\nTeam Kairos`,
+      id: campaignId,
+      name: workflowProposal.campaignName,
+      eventId,
+      subject: workflowProposal.subject,
+      body: workflowProposal.body,
       status: "Draft",
     };
-    const saved = await commitState((s) => ({
-      ...s,
-      counter: s.counter + 5,
-      events: [...s.events, event],
-      customers: [...s.customers, ...freshCustomers],
-      registrations: [...s.registrations, ...newRegistrations],
-      campaigns: [...s.campaigns, campaign],
+    const saved = await commitState((current) => ({
+      ...current,
+      counter: current.counter + 2,
+      events: [...current.events, event],
+      campaigns: [...current.campaigns, campaign],
       activity: [
-        { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-ai`, type: "AI", message: "Simulated reminder copy generated", status: "Simulated", createdAt: Date.now() },
-        { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-campaign`, type: "Campaign", message: `Campaign draft created by AI workflow: ${campaign.name}`, status: "Success", createdAt: Date.now() },
-        { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-website`, type: "Website", message: `Landing page ready for ${title}`, status: "Success", createdAt: Date.now() },
-        { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-event`, type: "Event", message: `Event created by AI workflow: ${title}`, status: "Success", createdAt: Date.now() },
-        ...s.activity,
+        { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-campaign`, type: "Campaign", message: `Campaign draft created by approved AI workflow: ${campaign.name}`, status: "Success", createdAt: Date.now() },
+        { id: globalThis.crypto?.randomUUID?.() || `activity-${Date.now()}-event`, type: "Event", message: `Event created by approved AI workflow: ${event.title}`, status: "Success", createdAt: Date.now() },
+        ...current.activity,
       ],
     }));
     if (!saved) {
       setBusy(false);
       return;
     }
-    const assistantReply = {
+    setSelectedEvent(eventId);
+    setPageDraft(null);
+    setWorkflowProposal(null);
+    await appendChat({
       role: "assistant",
-      text: "Workflow complete. The event, CRM registrations, landing page, and campaign draft are available in their respective sections. AI copy and messaging are simulated.",
+      text: `Approved and saved "${event.title}", its registration page draft, and a linked campaign draft. The page is not public until you publish it in Website Builder; the campaign is not sent.`,
       steps: [
         ["Create event", "Success"],
         ["Prepare registration page", "Success"],
-        ["Add registrants to CRM", "Success"],
-        ["Draft reminder campaign", "Success"],
-        ["Write reminder copy with AI", "Simulated"],
+        ["Draft linked campaign", "Success"],
       ],
-    };
-    await appendChat(assistantReply);
+    });
+    notify("Approved workflow saved. Review the campaign before requesting approval.");
     setBusy(false);
   }
 
@@ -504,25 +731,30 @@ export default function App({ user, onSignOut }) {
 
   function overviewPage() {
     const today = new Date();
+    const actualRegistrations = state.registrations.filter((registration) => registration.isDemo !== true);
+    const actualCustomers = state.customers.filter((customer) => customer.isDemo !== true);
+    const actualEvents = state.events.filter((event) => event.isDemo !== true);
+    const actualCampaigns = state.campaigns.filter((campaign) => campaign.isDemo !== true);
+    const actualActivity = state.activity.filter((item) => item.isDemo !== true);
     const lastWeek = Array.from({ length: 7 }, (_, index) => {
       const day = new Date(today.getTime() - (6 - index) * DAY);
       return {
         label: day.toLocaleDateString("en-IN", { weekday: "short" }),
-        count: state.registrations.filter((registration) => new Date(registration.createdAt).toDateString() === day.toDateString()).length,
+        count: actualRegistrations.filter((registration) => new Date(registration.createdAt).toDateString() === day.toDateString()).length,
       };
     });
     const max = Math.max(3, ...lastWeek.map((day) => day.count));
-    const countLog = (type, status) => state.activity.filter((item) => item.type === type && (!status || item.status === status)).length;
+    const countLog = (type, status) => actualActivity.filter((item) => item.type === type && (!status || item.status === status)).length;
     const kpis = [
-      ["Total customers", state.customers.length, `${state.customers.filter((customer) => customer.status === "Lead").length} leads`, "violet"],
+      ["Total customers", actualCustomers.length, `${actualCustomers.filter((customer) => customer.status === "Lead").length} leads`, "violet"],
       ["Upcoming webinars", upcoming.length, `Next: ${upcoming[0] ? formatDate(upcoming[0].date) : "—"}`, "cyan"],
-      ["Total registrations", state.registrations.length, `Across ${state.events.length} events`, "amber"],
-      ["Active campaigns", state.campaigns.filter((campaign) => !campaign.status.startsWith("Sent")).length, `${state.campaigns.filter((campaign) => campaign.status === "Ready").length} ready`, "rose"],
+      ["Total registrations", actualRegistrations.length, `Across ${actualEvents.length} events`, "amber"],
+      ["Active campaigns", actualCampaigns.filter((campaign) => !campaign.status.startsWith("Sent")).length, `${actualCampaigns.filter((campaign) => campaign.status === "Ready").length} ready`, "rose"],
     ];
     const workflows = [
       ["Registration → CRM sync", `${countLog("CRM", "Success")} synced`, "Success"],
       ["Campaigns awaiting approval", `${state.campaigns.filter((campaign) => campaign.status === "Pending approval").length} pending`, "Pending"],
-      ["AI command runs", `${countLog("AI")} runs`, "Simulated"],
+      ["AI workflow proposals", `${countLog("AI")} proposals`, "OpenAI"],
       ["Errors / blocked actions", `${countLog("Error") + countLog("Registration", "Error")} logged`, "Success"],
     ];
     return <>
@@ -538,10 +770,13 @@ export default function App({ user, onSignOut }) {
       </div>
       <div className="grid two-column top-gap">
         <section className="card"><div className="section-heading"><div><span className="eyebrow">WORKSPACE FEED</span><h2>Recent activity</h2></div><button className="text-button" onClick={() => navigate("log")}>View all <span>↗</span></button></div>
-          {state.activity.slice(0, 5).map((item, index) => <div className="list-row" key={`${item.createdAt}-${index}`}><span><b>{item.message}</b><small>{item.type} · {timeAgo(item.createdAt)}</small></span><Pill>{item.status}</Pill></div>)}
+          {actualActivity.slice(0, 5).map((item, index) => <div className="list-row" key={`${item.createdAt}-${index}`}><span><b>{item.message}</b><small>{item.type} · {timeAgo(item.createdAt)}</small></span><Pill>{item.status}</Pill></div>)}{!actualActivity.length && <Empty>No real workspace activity yet.</Empty>}
         </section>
         <section className="card"><div className="section-heading"><div><span className="eyebrow">COMING UP</span><h2>Upcoming events</h2></div><button className="text-button" onClick={() => navigate("events")}>Manage <span>↗</span></button></div>
-          {upcoming.length ? upcoming.slice(0, 3).map((event) => <div className="event-progress" key={event.id}><div className="list-row compact"><span><b>{event.title}</b><small>{formatDate(event.date)}</small></span><small>{registrationsFor(event.id).length} / {event.capacity}</small></div><div className="progress"><i style={{ width: `${Math.min(100, registrationsFor(event.id).length / event.capacity * 100)}%` }} /></div></div>) : <Empty>No upcoming events.</Empty>}
+          {upcoming.length ? upcoming.slice(0, 3).map((event) => {
+            const registered = registrationsFor(event.id).filter((registration) => registration.isDemo !== true).length;
+            return <div className="event-progress" key={event.id}><div className="list-row compact"><span><b>{event.title}</b><small>{formatDate(event.date)}</small></span><small>{registered} / {event.capacity}</small></div><div className="progress"><i style={{ width: `${Math.min(100, registered / event.capacity * 100)}%` }} /></div></div>;
+          }) : <Empty>No upcoming events.</Empty>}
         </section>
       </div>
     </>;
@@ -561,13 +796,14 @@ export default function App({ user, onSignOut }) {
   function crmPage() {
     const filtered = state.customers.filter((customer) => [customer.name, customer.email, customer.status, customer.source].join(" ").toLowerCase().includes(search.toLowerCase()));
     return <>
-      <PageHeader title="CRM" description="Every event registration is automatically connected to your customer records." />
+      <PageHeader title="CRM" description="Create, find, and update customer records connected to your events." action={<button className="btn" onClick={() => openCustomerForm()}>＋ Add customer</button>} />
       <section className="card table-card"><div className="table-tools"><div><h2>Customers</h2><small className="subtle">{filtered.length} of {state.customers.length} customers</small></div><input className="search" placeholder="Search name, email, status…" value={search} onChange={(event) => setSearch(event.target.value)} /></div>
-        <div className="table-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>Registration history</th><th>Status</th><th>Source</th></tr></thead><tbody>{filtered.map((customer) => {
+        <div className="table-scroll"><table><thead><tr><th>Name</th><th>Email</th><th>Registration history</th><th>Status</th><th>Source</th><th>Actions</th></tr></thead><tbody>{filtered.map((customer) => {
           const history = state.registrations.filter((registration) => registration.customerId === customer.id);
-          return <tr key={customer.id}><td><b>{customer.name}</b></td><td>{customer.email}</td><td>{history.length ? history.map((item) => <div key={item.id}>{eventById(item.eventId)?.title}<small className="cell-muted"> · {timeAgo(item.createdAt)}</small></div>) : <span className="subtle">No events yet</span>}</td><td><Pill>{customer.status}</Pill></td><td>{customer.source}</td></tr>;
+          return <tr key={customer.id}><td><b>{customer.name}</b></td><td>{customer.email}</td><td>{history.length ? history.map((item) => <div key={item.id}>{eventById(item.eventId)?.title}<small className="cell-muted"> · {timeAgo(item.createdAt)}</small></div>) : <span className="subtle">No events yet</span>}</td><td><Pill>{customer.status}</Pill></td><td>{customer.source}</td><td><button className="text-button" onClick={() => openCustomerForm(customer)}>Edit</button></td></tr>;
         })}</tbody></table>{!filtered.length && <Empty>No matching customers.</Empty>}</div>
       </section>
+      {customerForm && <div className="overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setCustomerForm(null); }}><form className="modal-card" onSubmit={saveCustomer}><div className="modal-heading"><div><span className="eyebrow">CUSTOMER RECORD</span><h2>{customerForm.id ? "Edit customer" : "Add customer"}</h2></div><button type="button" className="icon-button" onClick={() => setCustomerForm(null)}>×</button></div>{customerForm.error && <div className="notice error" role="alert">{customerForm.error}</div>}<label>Full name<input name="name" required defaultValue={customerForm.name} autoFocus /></label><label>Email address<input name="email" type="email" required defaultValue={customerForm.email} /></label><div className="form-grid"><label>Status<select name="status" defaultValue={customerForm.status}><option>Lead</option><option>Active</option><option>Customer</option></select></label><label>Source<input name="source" required defaultValue={customerForm.source} /></label></div><div className="modal-actions"><button type="button" className="btn secondary" onClick={() => setCustomerForm(null)}>Cancel</button><button className="btn">Save customer</button></div></form></div>}
     </>;
   }
 
@@ -577,6 +813,7 @@ export default function App({ user, onSignOut }) {
     };
     return <>
       <PageHeader title="Marketing" description="Build on-brand event campaigns with a human approval step." action={<button className="btn" onClick={() => startCampaign()}>＋ New campaign</button>} />
+      {campaignError && <div className="notice error billing-error" role="alert"><span>{campaignError}</span><button type="button" className="text-button" onClick={() => setCampaignError("")}>Dismiss</button></div>}
       <section className="card table-card"><div className="section-heading"><div><span className="eyebrow">CAMPAIGN WORKSPACE</span><h2>Your campaigns</h2></div><span className="subtle">Approved campaigns send to linked event attendees</span></div>
         {state.campaigns.length ? <div className="campaign-grid">{state.campaigns.map((campaign, index) => <article className={`campaign-card tone-${index % 6}`} key={campaign.id}>
           <div className="campaign-card-top"><span className="campaign-mark">{String(index + 1).padStart(2, "0")}</span><Pill>{campaign.status}</Pill></div>
@@ -600,9 +837,11 @@ export default function App({ user, onSignOut }) {
     const event = eventById(selectedEvent) || state.events[0];
     if (!event) return <><PageHeader title="Website Builder" description="Build event registration pages." /><Empty>Create an event to get started.</Empty></>;
     const draft = pageDraft || event.page;
+    const draftSlug = draft.slug || event.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const publicUrl = `${window.location.origin}/events/${draftSlug}`;
     return <>
       <PageHeader title="Website Builder" description="Design a landing page for each event. Changes update the preview instantly." />
-      <section className="card builder-card"><div className="builder-controls"><label>Choose event<select value={event.id} onChange={(change) => { setSelectedEvent(change.target.value); setPageDraft(null); }}>{state.events.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></label><span className="live-indicator">Preview live</span></div><div className="builder-grid"><div className="builder-form"><span className="eyebrow">PAGE CONTENT</span><h2>Make it yours</h2><label>Headline<input value={draft.headline} placeholder={event.title} onChange={(change) => setPageDraft({ ...draft, headline: change.target.value })} /></label><label>Supporting text<textarea value={draft.subheading} placeholder={event.description} onChange={(change) => setPageDraft({ ...draft, subheading: change.target.value })} /></label><label>Button label<input value={draft.cta} placeholder="Reserve my seat" onChange={(change) => setPageDraft({ ...draft, cta: change.target.value })} /></label><button className="btn" onClick={saveLandingPage}>Save landing page</button></div><div className="landing-preview"><div className="preview-browser"><span /><span /><span /><small>kairos.events/{event.id}</small></div><div className="landing-hero"><span className="eyebrow">YOU'RE INVITED</span><span className="preview-date">{formatDate(event.date)} · {event.time}</span><h2>{draft.headline || event.title}</h2><p>{draft.subheading || event.description}</p><button className="btn">{draft.cta || "Register"}</button><div className="preview-capacity">{registrationsFor(event.id).length} / {event.capacity} seats reserved</div></div></div></div></section>
+      <section className="card builder-card"><div className="builder-controls"><label>Choose event<select value={event.id} onChange={(change) => { setSelectedEvent(change.target.value); setPageDraft(null); }}>{state.events.map((item) => <option key={item.id} value={item.id}>{item.title}</option>)}</select></label><span className="live-indicator">Preview live</span></div><div className="builder-grid"><div className="builder-form"><span className="eyebrow">PAGE CONTENT</span><h2>Make it yours</h2><label>Headline<input value={draft.headline} placeholder={event.title} onChange={(change) => setPageDraft({ ...draft, headline: change.target.value })} /></label><label>Supporting text<textarea value={draft.subheading} placeholder={event.description} onChange={(change) => setPageDraft({ ...draft, subheading: change.target.value })} /></label><label>Button label<input value={draft.cta} placeholder="Reserve my seat" onChange={(change) => setPageDraft({ ...draft, cta: change.target.value })} /></label><label>Public page URL<input value={draft.slug || ""} placeholder={draftSlug} maxLength="100" onChange={(change) => setPageDraft({ ...draft, slug: change.target.value.toLowerCase().replace(/[^a-z0-9-]+/g, "-") })} /></label><label className="publish-toggle"><input type="checkbox" checked={Boolean(draft.published)} onChange={(change) => setPageDraft({ ...draft, published: change.target.checked })} /> Publish this event page and allow public registration</label><button className="btn" onClick={saveLandingPage}>Save landing page</button>{draft.published && <a className="public-page-link" href={publicUrl} target="_blank" rel="noreferrer">{publicUrl} ↗</a>}</div><div className="landing-preview"><div className="preview-browser"><span /><span /><span /><small>kairos.events/{draftSlug}</small></div><div className="landing-hero"><span className="eyebrow">YOU'RE INVITED</span><span className="preview-date">{formatDate(event.date)} · {event.time}</span><h2>{draft.headline || event.title}</h2><p>{draft.subheading || event.description}</p><button className="btn">{draft.cta || "Register"}</button><div className="preview-capacity">{registrationsFor(event.id).length} / {event.capacity} seats reserved</div></div></div></div></section>
     </>;
   }
 
@@ -612,25 +851,35 @@ export default function App({ user, onSignOut }) {
       { name: "Growth", price: 49, caption: "For teams in motion", features: ["Unlimited events", "Automated CRM sync", "Marketing workflows"] },
       { name: "Scale", price: 149, caption: "For growing operations", features: ["Everything in Growth", "Advanced analytics", "Priority support"] },
     ];
+    const renewalDate = state.stripeCurrentPeriodEnd
+      ? `${state.stripeCancelAtPeriodEnd ? "Paid access ends on" : "Next renewal"} ${formatDate(new Date(state.stripeCurrentPeriodEnd * 1000).toISOString().slice(0, 10))}.`
+      : "No paid renewal scheduled.";
     return <>
-      <PageHeader title="Subscriptions" description="Manage your workspace plan and billing preferences." action={<Pill>{state.subscriptionStatus}</Pill>} />
-      <section className="card billing-summary"><div><span className="eyebrow">CURRENT PLAN</span><h2>{state.plan} <span className="plan-price">${plans.find((plan) => plan.name === state.plan)?.price || 0}<small> / month</small></span></h2><p className="sub">Your next renewal is on {formatDate(dateIn(30))}.</p></div><div className="billing-switch"><button className={state.billing === "monthly" ? "selected" : ""} onClick={() => commitState((current) => ({ ...current, billing: "monthly" }))}>Monthly</button><button className={state.billing === "yearly" ? "selected" : ""} onClick={() => commitState((current) => ({ ...current, billing: "yearly" }))}>Yearly <span>−20%</span></button></div></section>
-      <div className="grid plan-grid">{plans.map((plan) => <article className={`card plan-card ${state.plan === plan.name ? "current" : ""}`} key={plan.name}>{plan.name === "Growth" && <span className="plan-ribbon">POPULAR</span>}<span className="eyebrow">{plan.caption}</span><h2>{plan.name}</h2><div className="plan-price">${plan.price}<small> / month</small></div><div className="plan-features">{plan.features.map((feature) => <div key={feature}><span>✓</span>{feature}</div>)}</div><button className={`btn ${state.plan === plan.name ? "secondary" : ""}`} onClick={async () => { const saved = await commitState((current) => ({ ...current, plan: plan.name, subscriptionStatus: "Active" })); if (saved) { await log("Subscription", `SIMULATED plan switch to ${plan.name}`, "Simulated"); notify("Plan switched (simulated)."); } }}>{state.plan === plan.name ? "Current plan" : "Choose plan"}</button></article>)}</div>
-      <section className="card simulation-panel"><div><span className="eyebrow">DEMO CONTROLS</span><h2>Subscription status</h2><p className="sub">These controls simulate subscription events; no payment is processed.</p></div><div className="button-row"><button className="btn secondary" onClick={() => commitState((current) => ({ ...current, subscriptionStatus: current.subscriptionStatus === "Trial" ? "Active" : "Trial" }))}>Toggle trial</button><button className="btn ghost" onClick={async () => { if (await commitState((current) => ({ ...current, subscriptionStatus: "Past due" }))) notify("Simulated failed payment."); }}>Simulate failed payment</button></div></section>
+      <PageHeader title="Subscriptions" description="Choose a plan and manage secure Stripe billing." action={<Pill>{state.subscriptionStatus || "Free"}</Pill>} />
+      {billingError && <div className="notice error billing-error" role="alert"><span>{billingError}</span><button type="button" className="text-button" onClick={() => setBillingError("")}>Dismiss</button></div>}
+      <section className="card billing-summary"><div><span className="eyebrow">CURRENT PLAN</span><h2>{state.plan} <span className="plan-price">${plans.find((plan) => plan.name === state.plan)?.price || 0}<small> / month</small></span></h2><p className="sub">{renewalDate}</p></div><div className="button-row">{state.stripeCustomerId && <button className="btn secondary" disabled={billingBusy} onClick={manageBilling}>Manage billing</button>}<button className="btn ghost" disabled={billingBusy || !state.stripeCustomerId} onClick={refreshBilling}>{billingBusy ? "Working…" : "Refresh subscription"}</button></div></section>
+      {!state.stripeSubscriptionId && state.plan !== "Starter" && <div className="notice">This workspace has no confirmed Stripe subscription. Select a paid plan to start secure checkout.</div>}
+      <div className="grid plan-grid">{plans.map((plan) => {
+        const isCurrent = state.plan === plan.name;
+        const canManage = Boolean(state.stripeCustomerId) && isCurrent;
+        return <article className={`card plan-card ${isCurrent ? "current" : ""}`} key={plan.name}>{plan.name === "Growth" && <span className="plan-ribbon">POPULAR</span>}<span className="eyebrow">{plan.caption}</span><h2>{plan.name}</h2><div className="plan-price">${plan.price}<small> / month</small></div><div className="plan-features">{plan.features.map((feature) => <div key={feature}><span>✓</span>{feature}</div>)}</div><button className={`btn ${isCurrent ? "secondary" : ""}`} disabled={billingBusy || (isCurrent && !canManage && plan.name === "Starter")} onClick={() => canManage ? manageBilling() : selectPlan(plan.name)}>{canManage ? "Manage billing" : isCurrent ? "Current plan" : plan.name === "Starter" ? "Use Starter" : "Subscribe with Stripe"}</button></article>;
+      })}</div>
+      <p className="sub">Payments and subscription changes are processed by Stripe. Use the billing portal to change or cancel a paid subscription.</p>
     </>;
   }
 
   function activityPage() {
+    const actualActivity = state.activity.filter((item) => item.isDemo !== true);
     return <>
-      <PageHeader title="Workflow Activity" description="A chronological record of actions in this demo workspace." />
-      <section className="card table-card"><div className="section-heading"><div><span className="eyebrow">AUDIT TRAIL</span><h2>Recent events</h2></div><span className="subtle">{state.activity.length} activities</span></div><div className="table-scroll"><table><thead><tr><th>Time</th><th>Type</th><th>Event</th><th>Status</th></tr></thead><tbody>{state.activity.map((item, index) => <tr key={`${item.createdAt}-${index}`}><td>{new Date(item.createdAt).toLocaleString("en-IN")}</td><td>{item.type}</td><td>{item.message}</td><td><Pill>{item.status}</Pill></td></tr>)}</tbody></table>{!state.activity.length && <Empty>No activity recorded yet.</Empty>}</div></section>
+      <PageHeader title="Workflow Activity" description="A chronological record of actions in your workspace." />
+      <section className="card table-card"><div className="section-heading"><div><span className="eyebrow">AUDIT TRAIL</span><h2>Recent events</h2></div><span className="subtle">{actualActivity.length} activities</span></div><div className="table-scroll"><table><thead><tr><th>Time</th><th>Type</th><th>Event</th><th>Status</th></tr></thead><tbody>{actualActivity.map((item, index) => <tr key={`${item.createdAt}-${index}`}><td>{new Date(item.createdAt).toLocaleString("en-IN")}</td><td>{item.type}</td><td>{item.message}</td><td><Pill>{item.status}</Pill></td></tr>)}</tbody></table>{!actualActivity.length && <Empty>No real workspace activity yet.</Empty>}</div></section>
     </>;
   }
 
   function aiPage() {
     return <>
-      <PageHeader title="AI Command Center" description="Describe a workflow and watch your workspace state update." />
-      <div className="ai-layout"><section className="card ai-chat"><div className="chat-header"><div className="ai-avatar">✦</div><div><b>NEXUS Copilot</b><small>Scripted workflow assistant · demo mode</small></div><span className="live-indicator">Ready</span></div><div className="chat-messages">{chat.length ? chat.map((message, index) => <div className={`chat-message ${message.role}`} key={`${message.role}-${index}`}><div className="message-bubble"><p>{message.text}</p>{message.steps && <div className="steps">{message.steps.map(([step, status], stepIndex) => <div className="step-row" key={step}><span>{String(stepIndex + 1).padStart(2, "0")}</span><b>{step}</b><Pill>{status}</Pill></div>)}</div>}</div></div>) : <div className="chat-welcome"><div className="ai-avatar large">✦</div><h2>Your operations, orchestrated.</h2><p>Ask NEXUS to coordinate an event workflow across your workspace.</p><button className="suggestion" onClick={() => setCommand("Create a product webinar, prepare its registration page, add registrants to CRM, and draft a reminder campaign.")}>Create a webinar and prepare its launch workflow <span>↗</span></button></div>}</div><div className="composer"><input value={command} disabled={busy} placeholder="Describe what you want to accomplish…" onChange={(event) => setCommand(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") runCommand(); }} /><button className="btn" disabled={busy || !command.trim()} onClick={() => runCommand()}>{busy ? "Working…" : "Run workflow"} <span>↗</span></button></div><small className="ai-disclaimer">Demo only. No real AI model or email delivery is connected.</small></section><aside className="card ai-info"><span className="eyebrow">HOW IT WORKS</span><h2>One prompt. Connected actions.</h2><p className="sub">NEXUS can coordinate this sample flow across your workspace data.</p>{["Create a webinar event", "Prepare the registration page", "Add attendees to CRM", "Draft an approval-ready campaign"].map((step, index) => <div className="info-step" key={step}><span>{index + 1}</span>{step}</div>)}</aside></div>
+      <PageHeader title="AI Command Center" description="Ask OpenAI to prepare an event launch workflow for your review." />
+      <div className="ai-layout"><section className="card ai-chat"><div className="chat-header"><div className="ai-avatar">✦</div><div><b>NEXUS Copilot</b><small>OpenAI workflow planner · approval required</small></div><span className="live-indicator">{busy ? "Working" : "Ready"}</span></div><div className="chat-messages">{chat.length ? chat.map((message, index) => <div className={`chat-message ${message.role}`} key={`${message.role}-${index}`}><div className="message-bubble"><p>{message.text}</p>{message.steps && <div className="steps">{message.steps.map(([step, status], stepIndex) => <div className="step-row" key={step}><span>{String(stepIndex + 1).padStart(2, "0")}</span><b>{step}</b><Pill>{status}</Pill></div>)}</div>}</div></div>) : <div className="chat-welcome"><div className="ai-avatar large">✦</div><h2>Your operations, orchestrated.</h2><p>OpenAI can prepare an event, landing-page content, and a linked campaign draft.</p><button className="suggestion" onClick={() => setCommand("Create a product webinar next month, prepare its registration page, and draft a reminder campaign.")}>Prepare a webinar launch workflow <span>↗</span></button></div>}</div>{workflowProposal && <section className="workflow-proposal"><span className="eyebrow">REVIEW BEFORE SAVING</span><h2>{workflowProposal.title}</h2><p>{workflowProposal.description}</p><div className="workflow-proposal-grid"><div><b>Event</b><span>{formatDate(workflowProposal.date)} · {workflowProposal.time} · {workflowProposal.capacity} seats</span></div><div><b>Registration page</b><span>{workflowProposal.headline}</span><small>{workflowProposal.subheading}</small></div><div><b>Campaign draft</b><span>{workflowProposal.campaignName}</span><small>{workflowProposal.subject}</small></div></div><details><summary>Review email draft</summary><p>{workflowProposal.body}</p></details><div className="button-row"><button className="btn" disabled={busy} onClick={approveWorkflowProposal}>{busy ? "Saving workflow…" : "Approve and create event + campaign"}</button><button className="btn ghost" disabled={busy} onClick={() => setWorkflowProposal(null)}>Discard proposal</button></div></section>}<div className="composer"><input value={command} disabled={busy} maxLength="2000" placeholder="Describe an event launch workflow…" onChange={(event) => setCommand(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") runCommand(); }} /><button className="btn" disabled={busy || !command.trim()} onClick={() => runCommand()}>{busy ? "Working…" : "Prepare workflow"} <span>↗</span></button></div><small className="ai-disclaimer">The agent can only propose an event launch workflow. No data is saved until you approve it. Configure OPENAI_API_KEY in Supabase Edge Function secrets.</small></section><aside className="card ai-info"><span className="eyebrow">HOW IT WORKS</span><h2>AI proposes. You approve.</h2><p className="sub">A restricted planner can propose these workspace changes. It does not send emails or register fictional attendees.</p>{["Create an event", "Prepare its registration page", "Draft a linked campaign", "Review and approve before saving"].map((step, index) => <div className="info-step" key={step}><span>{index + 1}</span>{step}</div>)}</aside></div>
     </>;
   }
 
@@ -662,8 +911,8 @@ export default function App({ user, onSignOut }) {
 
   return <div className="app-shell">
     {mobileMenu && <button className="scrim" aria-label="Close navigation" onClick={() => setMobileMenu(false)} />}
-    <aside className={`sidebar ${mobileMenu ? "open" : ""}`}><a className="brand" href="#overview" onClick={(event) => { event.preventDefault(); navigate("overview"); }}><span className="brand-mark">N</span><span><b>NEXUS</b><small>AI BUSINESS PLATFORM</small></span></a><div className="workspace-chip"><span className="workspace-icon">⌘</span><span><small>WORKSPACE</small><b>Kairos Demo Workspace</b></span><span className="chevron">⌄</span></div><div className="nav-label">WORKSPACE</div><nav>{navItems.map(([id, label, path]) => <button key={id} className={`nav-item ${view === id ? "active" : ""}`} onClick={() => navigate(id)}>{icon(path)}<span>{label}</span>{view === id && <i />}</button>)}</nav><div className="sidebar-footer"><div className="workspace-status"><span className="status-dot" /><span>All systems operational</span></div><button className="reset-button" onClick={resetDemo}>↺ Reset demo data</button><div className="profile"><span className="profile-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span><span><b>{user.user_metadata?.full_name || user.email?.split("@")[0] || "Account"}</b><small>{user.email}</small></span><button className="signout-button" title="Log out of your account" onClick={signOut}>Log out</button></div></div></aside>
-    <main className="main-content"><header className="topbar"><button className="menu-toggle" aria-label="Toggle menu" onClick={() => setMobileMenu(!mobileMenu)}>☰</button><div className="breadcrumb"><span>Workspace</span><b>/</b><strong>{navItems.find(([id]) => id === view)?.[1]}</strong></div><div className="topbar-right"><span className="environment-badge"><i /> Secure account</span><span className="top-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span></div></header><div className={`page-content view-${view}`}>{pages[view]()}</div><footer className="app-footer"><span>NEXUS <i>·</i> AI Business Operating Platform</span><span>Workspace data · Supabase · Resend email · Simulated payments and AI</span></footer></main>
+    <aside className={`sidebar ${mobileMenu ? "open" : ""}`}><a className="brand" href="#overview" onClick={(event) => { event.preventDefault(); navigate("overview"); }}><span className="brand-mark">N</span><span><b>NEXUS</b><small>AI BUSINESS PLATFORM</small></span></a><div className="workspace-chip"><span className="workspace-icon">⌘</span><span><small>WORKSPACE</small><b>Kairos Demo Workspace</b></span><span className="chevron">⌄</span></div><div className="nav-label">WORKSPACE</div><nav>{navItems.map(([id, label, path]) => <button key={id} className={`nav-item ${view === id ? "active" : ""}`} onClick={() => navigate(id)}>{icon(path)}<span>{label}</span>{view === id && <i />}</button>)}</nav><div className="sidebar-footer"><div className="workspace-status"><span className="status-dot" /><span>All systems operational</span></div><div className="profile"><span className="profile-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span><span><b>{user.user_metadata?.full_name || user.email?.split("@")[0] || "Account"}</b><small>{user.email}</small></span><button className="signout-button" title="Log out of your account" onClick={signOut}>Log out</button></div></div></aside>
+    <main className="main-content"><header className="topbar"><button className="menu-toggle" aria-label="Toggle menu" onClick={() => setMobileMenu(!mobileMenu)}>☰</button><div className="breadcrumb"><span>Workspace</span><b>/</b><strong>{navItems.find(([id]) => id === view)?.[1]}</strong></div><div className="topbar-right"><span className="environment-badge"><i /> Secure account</span><span className="top-avatar">{(user.user_metadata?.full_name || user.email || "A").slice(0, 1).toUpperCase()}</span></div></header><div className={`page-content view-${view}`}>{pages[view]()}</div><footer className="app-footer"><span>NEXUS <i>·</i> AI Business Operating Platform</span><span>Workspace data · Supabase · Stripe · OpenAI · Resend email</span></footer></main>
     {modal && <div className="overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setModal(null); }}>{modalContent()}</div>}
     {toast && <div className="toast-message"><span>✓</span>{toast}</div>}
   </div>;
